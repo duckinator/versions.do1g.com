@@ -23,7 +23,7 @@ main {
 }
 
 table {
-  border-spacing: 0;
+  border-collapse: collapse;
 }
 
 tr:nth-child(odd) {
@@ -34,6 +34,14 @@ tr.header {
   background: transparent;
 }
 
-td {
+tr.header th:first-child, th.left-header {
+  text-align: left;
+}
+
+th.left-header, td {
   padding: 1em 2em;
+}
+
+tr.header th:first-child {
+  padding-left: 2em;
 }

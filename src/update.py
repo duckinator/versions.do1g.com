@@ -133,13 +133,16 @@ def main():
 
         f.write("<table>\n")
         f.write("  <tr class='header'>\n")
-        f.write("    <th>Operating System</td>\n")
+        f.write("    <th rowspan=2>Operating System</th>\n")
+        f.write("    <th colspan=4>Package</th>\n")
+        f.write("  </tr>\n")
+        f.write("  <tr class='header'>\n")
         for package in packages:
             f.write("    <th>{}</th>\n".format(package))
         f.write("  </tr>\n")
         for os_name in os_info.keys():
             f.write("  <tr>\n")
-            f.write("    <td>{}</td>\n".format(os_name))
+            f.write("    <th class='left-header'>{}</th>\n".format(os_name))
             print("{}:".format(os_name))
             package_info = os_info[os_name]
             for name in package_info.keys():
