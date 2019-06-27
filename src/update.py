@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import datetime
 from pathlib import Path
 import textwrap
 from subprocess import check_output, check_call
@@ -110,13 +111,17 @@ def main():
     os_info = get_info()
     packages = os_info[list(os_info.keys())[0]].keys()
 
+    date = datetime.datetime.utcnow().strftime('%b %d, %Y at %H:%M UTC')
+
     src = Path(__file__).resolve().parent
     site = src.parent / '_site'
 
     template = src / 'index.html.template'
     output = site / 'index.html'
 
-    template_parts = template.read_text().split('{{ table }}')
+    template_text= template.read_text()
+    template_text.replace('{{ date }}', date)
+    template_parts = template_text.split('{{ table }}')
 
     with open(str(output), 'w') as f:
         f.write(template_parts[0])
