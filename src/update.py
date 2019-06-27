@@ -120,7 +120,7 @@ def main():
     output = site / 'index.html'
 
     template_text= template.read_text()
-    template_text.replace('{{ date }}', date)
+    template_text = template_text.replace('{{ date }}', date)
     template_parts = template_text.split('{{ table }}')
 
     with open(str(output), 'w') as f:
@@ -145,6 +145,6 @@ def main():
             print("")
         f.write("</table>\n")
 
-        f.write(template_parts[0])
+        f.write(template_parts[1])
 
 main()
