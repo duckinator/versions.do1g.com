@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from pathlib import Path
 import textwrap
 from subprocess import check_output, check_call
 
@@ -107,12 +108,38 @@ def get_info():
 
 def main():
     os_info = get_info()
+    packages = os_info[list(os_info.keys())[0]].keys()
 
-    for os_name in os_info.keys():
-        print("{}:".format(os_name))
-        package_info = os_info[os_name]
-        for name in package_info.keys():
-            print("  {} = {}".format(name, package_info[name]))
-        print("")
+    src = Path(__file__).resolve().parent
+    site = src.parent / '_site'
+
+    template = src / 'index.html.template'
+    output = site / 'index.html'
+
+    template_parts = template.read_text().split('{{ table }}')
+
+    with open(str(output), 'w') as f:
+        f.write(template_parts[0])
+
+        f.write("<table>\n")
+        f.write("  <tr class='header'>\n")
+        f.write("    <th>Operating System</td>\n")
+        for package in packages:
+            f.write("    <th>{}</th>\n".format(package))
+        f.write("  </tr>\n")
+        for os_name in os_info.keys():
+            f.write("  <tr>\n")
+            f.write("    <td>{}</td>\n".format(os_name))
+            print("{}:".format(os_name))
+            package_info = os_info[os_name]
+            for name in package_info.keys():
+                version = package_info[name]
+                f.write("    <td>{}</td>\n".format(version))
+                print("  {} = {}".format(name, version))
+            f.write("  </tr>\n")
+            print("")
+        f.write("</table>\n")
+
+        f.write(template_parts[0])
 
 main()
