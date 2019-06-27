@@ -1,0 +1,39 @@
+/* vim: set fs=css */
+
+html {
+  box-sizing: border-box;
+  text-rendering: optimizeLegibility;
+  font-family: sans-serif;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 100%;
+  line-height: 1.5em;
+  color: #1b2122;
+  background-color: #b1ccce;
+}
+
+main {
+  margin: auto;
+  max-width: 90ch;
+}
+
+table {
+  border-spacing: 0;
+}
+
+tr:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+tr.header {
+  background: transparent;
+}
+
+td {
+  padding: 1em 2em;
+}

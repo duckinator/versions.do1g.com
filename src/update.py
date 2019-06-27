@@ -107,6 +107,9 @@ def get_info():
         print("Done.")
     return os_info
 
+def copy(src, dest):
+    return dest.write_text(src.read_text())
+
 def main():
     os_info = get_info()
     packages = os_info[list(os_info.keys())[0]].keys()
@@ -115,6 +118,8 @@ def main():
 
     src = Path(__file__).resolve().parent
     site = src.parent / '_site'
+
+    copy(src / 'application.css', site / 'application.css')
 
     template = src / 'index.html.template'
     output = site / 'index.html'
