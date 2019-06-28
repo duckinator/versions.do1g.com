@@ -45,6 +45,10 @@ def package_info_command(pkgman, packages):
         packages = list(map(lambda x: x + '.x86_64', packages))
         return 'dnf info --color=false {}'.format(' '.join(packages))
     if pkgman == 'pacman':
+        # ArchLinux calls their python 3.x package 'python', not 'python3'.
+        # Unlike basically everything else I've ever encountered.
+        if 'python3' in packages:
+            packages[packages.index('python3')] = 'python'
         return 'pacman -Syi --noprogressbar {}'.format(' '.join(packages))
     if pkgman == 'zypper':
         return 'zypper info {}'.format(' '.join(packages))
