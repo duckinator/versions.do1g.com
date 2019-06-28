@@ -41,6 +41,7 @@ tr.header th:first-child, th.left-header {
 
 th.left-header, td {
   padding: 1em 2em;
+  min-width: 15ch;
 }
 
 tr.header th:first-child {

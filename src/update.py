@@ -7,8 +7,8 @@ from subprocess import check_output, check_call
 distro_containers = {
     #'ArchLinux': 'archlinux/base:latest',
 
-    'Debian 9 (Stretch)': 'debian:9',
-    'Debian 10 (Buster)': 'debian:buster',
+    'Debian 9': 'debian:9',
+    'Debian 10': 'debian:buster',
 
     'Fedora 29': 'fedora:29',
     'Fedora 30': 'fedora:30',
@@ -16,7 +16,7 @@ distro_containers = {
     #'OpenSUSE Leap 15.0': 'opensuse/leap:15.0',
     #'OpenSUSE Leap 15.1': 'opensuse/leap:15.1',
 
-    'Ubuntu 18.04 LTS': 'ubuntu:18.04',
+    'Ubuntu 18.04': 'ubuntu:18.04',
     'Ubuntu 19.04': 'ubuntu:19.04',
 }
 
