@@ -48,8 +48,9 @@ def package_info_command(pkgman, packages):
         # ArchLinux calls their python 3.x package 'python', not 'python3'.
         # Unlike basically everything else I've ever encountered.
         if 'python3' in packages:
-            packages[packages.index('python3')] = 'python'
-        return 'pacman -Syi --noprogressbar {}'.format(' '.join(packages))
+            packages_copy = packages.copy()
+            packages_copy[packages_copy.index('python3')] = 'python'
+        return 'pacman -Syi --noprogressbar {}'.format(' '.join(packages_copy))
     if pkgman == 'zypper':
         return 'zypper info {}'.format(' '.join(packages))
 
@@ -78,6 +79,11 @@ def parse_apt_dnf_zypper_info_common(output):
         data = parse_apt_dnf_zypper_chunk(chunk)
         #print("DATA=", data, "---")
         name = data.get('Package', data.get('Name'))
+
+        # DAMNIT ARCHLINUX.
+        if name == 'python':
+            name = 'python3'
+
         version = normalize_version(data['Version'])
         package_info[name] = version
         print('package_info[{}] = {}'.format(name, version))
