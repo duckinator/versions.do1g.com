@@ -131,10 +131,7 @@ def main():
 
         f.write("<table>\n")
         f.write("  <tr class='header'>\n")
-        f.write("    <th rowspan=2>Package</th>\n")
-        f.write("    <th colspan=4>Operating System</th>\n")
-        f.write("  </tr>\n")
-        f.write("  <tr class='header'>\n")
+        f.write("    <th>Package</th>\n")
         for os_name in os_info.keys():
             f.write("    <th>{}</th>\n".format(os_name))
         f.write("  </tr>\n")
