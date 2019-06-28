@@ -5,7 +5,7 @@ from pathlib import Path
 from subprocess import check_output, check_call
 
 distro_containers = {
-    #'ArchLinux': 'archlinux/base:latest',
+    'ArchLinux': 'archlinux/base:latest',
 
     'Debian 9': 'debian:9',
     'Debian 10': 'debian:buster',
@@ -44,8 +44,8 @@ def package_info_command(pkgman, packages):
     if pkgman == 'dnf':
         packages = list(map(lambda x: x + '.x86_64', packages))
         return 'dnf info --color=false {}'.format(' '.join(packages))
-    #if pkgman == 'pacman':
-    #    pass
+    if pkgman == 'pacman':
+        return 'pacman -Syi --noprogressbar {}'.format(' '.join(packages))
     if pkgman == 'zypper':
         return 'zypper info {}'.format(' '.join(packages))
 
@@ -89,17 +89,24 @@ def parse_apt_info(output):
 # raw `dnf info <packages>` output => {'pkg1': 'ver1', 'pkg2': 'ver2'}
 def parse_dnf_info(output):
     # Remove \r, collapse line continuations.
-    output = output.replace("\r", "\n").replace("\n             : ", ' ')
+    output = output.replace("\r", "").replace("\n             : ", ' ')
     return parse_apt_dnf_zypper_info_common(output)
 
-# TODO
+# raw `pacman -Syi <packages>` output => {'pkg1': 'ver1', 'pkg2': 'ver2'}
 def parse_pacman_info(output):
-    print("NO SUPPORT FOR PACMAN YET")
+    # Remove \r, collapse line continuations.
+    output = output.replace("\r", "").replace("\n                  ", ' ')
+
+    # Remove ":: <...>" and "downloading <repo name>..." lines.
+    valid = lambda x: not x.startswith(":: ") and not x.startswith("downloading ")
+    output = "\n".join(filter(valid, output.split("\n")))
+
+    return parse_apt_dnf_zypper_info_common(output)
 
 # raw `zypper info <packages>` output => {'pkg1': 'ver1', 'pkg2': 'ver2'}
 def parse_zypper_info(output):
     # Remove \r, collapse line continuations.
-    output = output.replace("\r", "\n").replace("\n    ", ' ')
+    output = output.replace("\r", "").replace("\n    ", ' ')
     return parse_apt_dnf_zypper_info_common(output)
 
 def parse_info(pkgman, output):
