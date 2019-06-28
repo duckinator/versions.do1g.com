@@ -15,6 +15,8 @@ body {
   line-height: 1.5em;
   color: #1b2122;
   background-color: #b1ccce;
+  margin: 0;
+  padding: 1em;
 }
 
 main {
@@ -44,8 +46,8 @@ th.left-header, td {
   min-width: 15ch;
 }
 
-tr.header th:first-child {
-  padding-left: 2em;
+th.left-header, th {
+  padding-left: 1em;
 }
 
 [class^=pkg-]:target {
