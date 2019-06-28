@@ -81,7 +81,7 @@ def docker_snippet(image_and_tag):
     return docker_setup_snippets[image] + ' && ' + test_snippet
 
 def docker_run(image, command):
-    full_command = ['docker', 'run', '--rm', '-t', image, 'sh', '-c', command]
+    full_command = ['podman', 'run', '--rm', '-t', image, 'sh', '-c', command]
     #return check_call(full_command)
     return check_output(full_command).decode()
 
@@ -98,13 +98,11 @@ def docker_get_info(image):
 def get_info():
     os_info = {}
     for os_name in distro_containers.keys():
-        print("Fetching {} information... ".format(os_name), end='', flush=True)
         os_info[os_name] = {}
         image = distro_containers[os_name]
         package_info = docker_get_info(image)
         for name in package_info.keys():
             os_info[os_name][name] = package_info[name]
-        print("Done.")
     return os_info
 
 def copy(src, dest):
