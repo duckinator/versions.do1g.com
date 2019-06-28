@@ -2,11 +2,10 @@
 
 import datetime
 from pathlib import Path
-import textwrap
 from subprocess import check_output, check_call
 
 distro_containers = {
-    'ArchLinux': 'archlinux/base:latest',
+    #'ArchLinux': 'archlinux/base:latest',
 
     'Debian 9 (Stretch)': 'debian:9',
     'Debian 10 (Buster)': 'debian:buster',
@@ -14,8 +13,8 @@ distro_containers = {
     'Fedora 29': 'fedora:29',
     'Fedora 30': 'fedora:30',
 
-    'OpenSUSE Leap 15.0': 'opensuse/leap:15.0',
-    'OpenSUSE Leap 15.1': 'opensuse/leap:15.1',
+    #'OpenSUSE Leap 15.0': 'opensuse/leap:15.0',
+    #'OpenSUSE Leap 15.1': 'opensuse/leap:15.1',
 
     'Ubuntu 18.04 LTS': 'ubuntu:18.04',
     'Ubuntu 19.04': 'ubuntu:19.04',
@@ -23,83 +22,119 @@ distro_containers = {
 
 # TODO: FreeBSD, OpenBSD, DragonFly BSD
 
-docker_setup_snippets = {
-    'archlinux': 'pacman --noconfirm -Sy python3 ruby clang gcc',
-    'debian': 'apt update && apt install -y python3 ruby clang gcc',
-    'fedora': 'dnf install -y python3 ruby clang gcc',
-    'opensuse': 'zypper install -y python3 ruby clang gcc',
+packages = ['python3', 'ruby', 'clang', 'gcc']
+package_managers = {
+    'archlinux': 'pacman',
+    'debian': 'apt',
+    'fedora': 'dnf',
+    'opensuse': 'zypper',
+    'ubuntu': 'apt',
 }
-docker_setup_snippets['ubuntu'] = docker_setup_snippets['debian']
 
-test_snippet = """
-    printf -- '-- START --\n' &&
-    printf -- '\n-- package=python3\n' &&
-    python3 --version &&
-    printf -- '\n-- package=ruby\n' &&
-    ruby --version &&
-    printf -- '\n-- package=clang\n' &&
-    clang --version &&
-    printf -- '\n-- package=gcc\n' &&
-    gcc --version &&
-    printf -- '\n-- END --\n'
-"""
+def normalize_version(version):
+    if ':' in version:
+        version = version.split(':')[1]
+    if '-' in version:
+        version = version.split('-')[0]
+    return version
 
-def get_package_version(name, info):
-    info = info.strip().split('\n')[0]
+def package_info_command(pkgman, packages):
+    if pkgman == 'apt':
+        return 'apt-get update && apt-cache show {}'.format(' '.join(packages))
+    if pkgman == 'dnf':
+        packages = list(map(lambda x: x + '.x86_64', packages))
+        return 'dnf info --color=false {}'.format(' '.join(packages))
+    #if pkgman == 'pacman':
+    #    pass
+    if pkgman == 'zypper':
+        return 'zypper info {}'.format(' '.join(packages))
 
-    # Python <version>
-    if name == 'python3':
-        return info.split(' ')[1]
+    raise Exception("Unknown package manager: {}".format(pkgman))
 
-    # Ruby <version>p<...>
-    if name == 'ruby':
-        return info.split(' ')[1].split('p')[0]
+def parse_apt_dnf_zypper_chunk(chunk):
+    lines = chunk.split("\n")
 
-    # clang version <version>
-    # clang version <version>-<???>
-    if name == 'clang':
-        return info.split(' ')[2].split('-')[0]
+    chunk_info = {}
+    for line in lines:
+        if not ':' in line:
+            continue
+        parts = line.split(':', 1)
+        name = parts[0].strip()
+        value = parts[1].strip()
+        chunk_info[name] = value
+    return chunk_info
 
-    # gcc (<???>) <version>
-    if name == 'gcc':
-        return info.split(')')[1].split(' ')[1]
+def parse_apt_dnf_zypper_info_common(output):
+    chunks = output.strip().split("\n\n")
 
-    return 'UNKNOWN'
-
-def parse_package_info(raw_package_info):
     package_info = {}
-    for data in raw_package_info:
-        #print(data)
-        name = data[0]
-        info = data[1]
-        package_info[name] = get_package_version(name, info)
+    for chunk in chunks:
+        print("chunk='", chunk, "'")
+
+        data = parse_apt_dnf_zypper_chunk(chunk)
+        #print("DATA=", data, "---")
+        name = data.get('Package', data.get('Name'))
+        version = normalize_version(data['Version'])
+        package_info[name] = version
+        print('package_info[{}] = {}'.format(name, version))
     return package_info
+
+
+# raw `apt show <packages>` output => {'pkg1': 'ver1', 'pkg2': 'ver2'}
+def parse_apt_info(output):
+    # Remove \r, collapse line continuations.
+    output = output.replace("\r", "").replace("\n ", ' ')
+    return parse_apt_dnf_zypper_info_common(output)
+
+# raw `dnf info <packages>` output => {'pkg1': 'ver1', 'pkg2': 'ver2'}
+def parse_dnf_info(output):
+    # Remove \r, collapse line continuations.
+    output = output.replace("\r", "\n").replace("\n             : ", ' ')
+    return parse_apt_dnf_zypper_info_common(output)
+
+# TODO
+def parse_pacman_info(output):
+    print("NO SUPPORT FOR PACMAN YET")
+
+# raw `zypper info <packages>` output => {'pkg1': 'ver1', 'pkg2': 'ver2'}
+def parse_zypper_info(output):
+    # Remove \r, collapse line continuations.
+    output = output.replace("\r", "\n").replace("\n    ", ' ')
+    return parse_apt_dnf_zypper_info_common(output)
+
+def parse_info(pkgman, output):
+    return {
+        'apt': parse_apt_info,
+        'dnf': parse_dnf_info,
+        'pacman': parse_pacman_info,
+        'zypper': parse_zypper_info,
+    }[pkgman](output)
+
 
 def docker_snippet(image_and_tag):
     # <image name>:<tag> => <image name>
     image = image_and_tag.split(':')[0].split('/')[0]
-    return docker_setup_snippets[image] + ' && ' + test_snippet
+    setup_snippet = package_info_command(package_managers[image], packages)
+    return "printf -- '--START--\\n' && " + setup_snippet + " && printf -- '\\n--END--'"
 
 def docker_run(image, command):
-    full_command = ['podman', 'run', '--rm', '-t', image, 'sh', '-c', command]
+    full_command = ['docker', 'run', '--rm', '-t', image, 'sh', '-c', command]
     #return check_call(full_command)
     return check_output(full_command).decode()
 
 def docker_get_info(image):
+    pkgman = package_managers[image.split(':')[0].split('/')[0]]
     command = docker_snippet(image)
     raw_output = docker_run(image, command).replace('\r', '')
-    all_packages = raw_output.split('-- START --')[1].split('-- END --')[0].split('\n-- package=')
-    raw_package_info = list(map(lambda x: x.strip().split('\n', 1), all_packages))
-    if raw_package_info[0] == ['']:
-        raw_package_info.pop(0)
-    package_info = parse_package_info(raw_package_info)
-    return package_info
+    info_output = raw_output.split("--START--\n")[1].split("\n--END--")[0]
+    return parse_info(pkgman, info_output)
 
 def get_info():
     os_info = {}
     for os_name in distro_containers.keys():
         os_info[os_name] = {}
         image = distro_containers[os_name]
+        print("Fetching information for {}.".format(image))
         package_info = docker_get_info(image)
         for name in package_info.keys():
             os_info[os_name][name] = package_info[name]
@@ -110,6 +145,9 @@ def copy(src, dest):
 
 def main():
     os_info = get_info()
+
+    print("Generating output files.")
+
     packages = os_info[list(os_info.keys())[0]].keys()
 
     date = datetime.datetime.utcnow().strftime('%b %d, %Y at %H:%M UTC')
