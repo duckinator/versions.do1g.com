@@ -18,12 +18,13 @@ body {
 }
 
 main {
-  margin: auto;
-  max-width: 90ch;
+  width: 100vw;
+  height: 100vh;
 }
 
 table {
   border-collapse: collapse;
+  margin-left: -1em;
 }
 
 tr:nth-child(even) {

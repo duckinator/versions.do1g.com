@@ -16,12 +16,12 @@
       <h1>Operating System Package Versions</h1>
 
       <p>This page provides the versions of packages that are available across different operating systems.</p>
+      <p>Maintained by <a href="https://smallest.dog">@duckinator</a>. Source is <a href="https://github.com/duckinator/versions.boop.ws">available on GitHub</a>.</p>
+      <p></p>
       <p>Last updated: {{ date }}</p>
 
 {{ table }}
 
-      <p>Maintained by <a href="https://smallest.dog">@duckinator</a>.</p>
-      <p>Source is <a href="https://github.com/duckinator/versions.boop.ws">available on GitHub</a>.</p>
     </main>
   </body>
 </html>

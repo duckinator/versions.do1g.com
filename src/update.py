@@ -137,7 +137,7 @@ def main():
         f.write("  </tr>\n")
         for package_name in packages:
             f.write("  <tr id='pkg-{}'>\n".format(package_name))
-            f.write("    <th class='left-header'>{}</th>\n".format(package_name))
+            f.write("    <th class='left-header'><a href='#pkg-{}'>{}</a></th>\n".format(package_name, package_name))
             for os_name in os_info.keys():
                 version = os_info[os_name][package_name]
                 f.write("    <td>{}</td>\n".format(version))
