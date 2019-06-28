@@ -15,13 +15,20 @@ body {
   line-height: 1.5em;
   color: #1b2122;
   background-color: #b1ccce;
+
   margin: 0;
-  padding: 1em;
+  padding: 0;
 }
 
 main {
   width: 100vw;
   height: 100vh;
+  padding: 1em;
+}
+
+h1 {
+  margin: 0;
+  padding: 0.5em 0;
 }
 
 table {
