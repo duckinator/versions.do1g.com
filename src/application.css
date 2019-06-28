@@ -45,3 +45,7 @@ th.left-header, td {
 tr.header th:first-child {
   padding-left: 2em;
 }
+
+[class^=pkg-]:target {
+  background-color: #28a6af;
+}

@@ -133,24 +133,20 @@ def main():
 
         f.write("<table>\n")
         f.write("  <tr class='header'>\n")
-        f.write("    <th rowspan=2>Operating System</th>\n")
-        f.write("    <th colspan=4>Package</th>\n")
+        f.write("    <th rowspan=2>Package</th>\n")
+        f.write("    <th colspan=4>Operating System</th>\n")
         f.write("  </tr>\n")
         f.write("  <tr class='header'>\n")
-        for package in packages:
-            f.write("    <th>{}</th>\n".format(package))
-        f.write("  </tr>\n")
         for os_name in os_info.keys():
-            f.write("  <tr>\n")
-            f.write("    <th class='left-header'>{}</th>\n".format(os_name))
-            print("{}:".format(os_name))
-            package_info = os_info[os_name]
-            for name in package_info.keys():
-                version = package_info[name]
+            f.write("    <th>{}</th>\n".format(os_name))
+        f.write("  </tr>\n")
+        for package_name in packages:
+            f.write("  <tr id='pkg-{}'>\n".format(package_name))
+            f.write("    <th class='left-header'>{}</th>\n".format(package_name))
+            for os_name in os_info.keys():
+                version = os_info[os_name][package_name]
                 f.write("    <td>{}</td>\n".format(version))
-                print("  {} = {}".format(name, version))
             f.write("  </tr>\n")
-            print("")
         f.write("</table>\n")
 
         f.write(template_parts[1])
