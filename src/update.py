@@ -2,35 +2,47 @@
 
 import datetime
 from pathlib import Path
+
 import docker
+import vagrant
 
+# Format is:
+#   'Name': [backend_module, 'image name']
+operating_systems = {
+    # Linux distros
 
-distro_containers = {
-    'ArchLinux': 'archlinux/base:latest',
+    'ArchLinux': [docker, 'archlinux/base:latest'],
 
-    'Debian 9': 'debian:9',
-    'Debian 10': 'debian:buster',
+    'Debian 9': [docker, 'debian:9'],
+    'Debian 10': [docker, 'debian:buster'],
 
-    'Fedora 29': 'fedora:29',
-    'Fedora 30': 'fedora:30',
+    'Fedora 29': [docker, 'fedora:29'],
+    'Fedora 30': [docker, 'fedora:30'],
 
-    'OpenSUSE Leap 15.0': 'opensuse/leap:15.0',
-    'OpenSUSE Leap 15.1': 'opensuse/leap:15.1',
+    'OpenSUSE Leap 15.0': [docker, 'opensuse/leap:15.0'],
+    'OpenSUSE Leap 15.1': [docker, 'opensuse/leap:15.1'],
 
-    'Ubuntu 18.04': 'ubuntu:18.04',
-    'Ubuntu 19.04': 'ubuntu:19.04',
+    'Ubuntu 18.04': [docker, 'ubuntu:18.04'],
+    'Ubuntu 19.04': [docker, 'ubuntu:19.04'],
+
+    #'DragonFly BSD 5': [vagrant, 'DragonFly BSD 5'],
+    'FreeBSD 11': [vagrant, 'FreeBSD 11'],
+    'FreeBSD 12': [vagrant, 'FreeBSD 12'],
+    #'NetBSD 8': [vagrant, 'NetBSD 8'],
+    #'OpenBSD 6': [vagrant, 'OpenBSD 6'],
 }
-
-# TODO: FreeBSD, OpenBSD, DragonFly BSD
 
 packages = ['python3', 'ruby', 'clang', 'gcc']
 
 def get_info():
     os_info = {}
-    for os_name in distro_containers.keys():
-        image = distro_containers[os_name]
-        print("Fetching information for {}.".format(image))
-        os_info[os_name] = docker.get_info(image, packages)
+    for os_name in operating_systems.keys():
+        parts = operating_systems[os_name]
+        module = parts[0]
+        image = parts[1]
+        print("Fetching information for {} using {}.".format(image, module.__name__.capitalize()))
+        #os_info[os_name] = docker.get_info(image, packages)
+        os_info[os_name] = module.get_info(image, packages)
     return os_info
 
 def copy(src, dest):
@@ -70,8 +82,11 @@ def main():
             f.write("  <tr id='pkg-{}'>\n".format(package_name))
             f.write("    <th class='left-header'><a href='#pkg-{}'>{}</a></th>\n".format(package_name, package_name))
             for os_name in os_info.keys():
-                version = os_info[os_name][package_name]
-                f.write("    <td>{}</td>\n".format(version))
+                if package_name in os_info[os_name]:
+                    version = os_info[os_name][package_name]
+                    f.write("    <td>{}</td>\n".format(version))
+                else:
+                    f.write("    <td>??</td>\n")
             f.write("  </tr>\n")
         f.write("</table>\n")
 
