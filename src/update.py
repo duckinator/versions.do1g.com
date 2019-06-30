@@ -3,7 +3,8 @@
 import datetime
 from pathlib import Path
 from subprocess import check_output, check_call
-import xml.etree.ElementTree as ET
+import package_info
+
 
 distro_containers = {
     'ArchLinux': 'archlinux/base:latest',
@@ -32,13 +33,6 @@ package_managers = {
     'ubuntu': 'apt',
 }
 
-def normalize_version(version):
-    if ':' in version:
-        version = version.split(':')[1]
-    if '-' in version:
-        version = version.split('-')[0]
-    return version
-
 def package_info_command(pkgman, packages):
     if pkgman == 'apt':
         return 'apt-get update && apt-cache show {}'.format(' '.join(packages))
@@ -57,84 +51,6 @@ def package_info_command(pkgman, packages):
 
     raise Exception("Unknown package manager: {}".format(pkgman))
 
-def parse_apt_dnf_zypper_chunk(chunk):
-    lines = chunk.split("\n")
-
-    chunk_info = {}
-    for line in lines:
-        if not ':' in line:
-            continue
-        parts = line.split(':', 1)
-        name = parts[0].strip()
-        value = parts[1].strip()
-        chunk_info[name] = value
-    return chunk_info
-
-def parse_apt_dnf_zypper_info_common(output):
-    chunks = output.strip().split("\n\n")
-
-    package_info = {}
-    for chunk in chunks:
-        data = parse_apt_dnf_zypper_chunk(chunk)
-
-        # pacman uses 'Package', apt/dnf/zypper use 'Name'
-        name = data.get('Package', data.get('Name'))
-
-        # DAMNIT ARCHLINUX.
-        if name == 'python':
-            name = 'python3'
-
-        version = normalize_version(data['Version'])
-        package_info[name] = version
-        print("{:20} {}".format(name, version))
-    return package_info
-
-
-# raw `apt show <packages>` output => {'pkg1': 'ver1', 'pkg2': 'ver2'}
-def parse_apt_info(output):
-    # Remove \r, collapse line continuations.
-    output = output.replace("\r", "").replace("\n ", ' ')
-    return parse_apt_dnf_zypper_info_common(output)
-
-# raw `dnf info <packages>` output => {'pkg1': 'ver1', 'pkg2': 'ver2'}
-def parse_dnf_info(output):
-    # Remove \r, collapse line continuations.
-    output = output.replace("\r", "").replace("\n             : ", ' ')
-    return parse_apt_dnf_zypper_info_common(output)
-
-# raw `pacman -Syi <packages>` output => {'pkg1': 'ver1', 'pkg2': 'ver2'}
-def parse_pacman_info(output):
-    # Remove \r, collapse line continuations.
-    output = output.replace("\r", "").replace("\n                  ", ' ')
-
-    # Remove ":: <...>" and "downloading <repo name>..." lines.
-    valid = lambda x: not x.startswith(":: ") and not x.startswith("downloading ")
-    output = "\n".join(filter(valid, output.split("\n")))
-
-    return parse_apt_dnf_zypper_info_common(output)
-
-# raw `zypper info <packages>` output => {'pkg1': 'ver1', 'pkg2': 'ver2'}
-def parse_zypper_info(output):
-    # Remove \r, collapse line continuations.
-    output = output.replace("\r", "").replace("\n    ", ' ')
-
-    root = ET.fromstring(output)
-    messages = root.findall("./message[@type='info']")
-    messages = [msg.text for msg in messages]
-    messages = list(filter(lambda msg: ':' in msg, messages))
-
-    output = "\n\n".join(messages)
-
-    return parse_apt_dnf_zypper_info_common(output)
-
-def parse_info(pkgman, output):
-    return {
-        'apt': parse_apt_info,
-        'dnf': parse_dnf_info,
-        'pacman': parse_pacman_info,
-        'zypper': parse_zypper_info,
-    }[pkgman](output)
-
 
 def docker_snippet(image_and_tag):
     # <image name>:<tag> => <image name>
@@ -152,7 +68,7 @@ def docker_get_info(image):
     command = docker_snippet(image)
     raw_output = docker_run(image, command).replace('\r', '')
     info_output = raw_output.split("--START--\n")[1].split("\n--END--")[0]
-    return parse_info(pkgman, info_output)
+    return package_info.parse(pkgman, info_output)
 
 def get_info():
     os_info = {}
