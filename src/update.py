@@ -3,6 +3,7 @@
 import datetime
 from pathlib import Path
 from subprocess import check_output, check_call
+import xml.etree.ElementTree as ET
 
 distro_containers = {
     'ArchLinux': 'archlinux/base:latest',
@@ -13,8 +14,8 @@ distro_containers = {
     'Fedora 29': 'fedora:29',
     'Fedora 30': 'fedora:30',
 
-    #'OpenSUSE Leap 15.0': 'opensuse/leap:15.0',
-    #'OpenSUSE Leap 15.1': 'opensuse/leap:15.1',
+    'OpenSUSE Leap 15.0': 'opensuse/leap:15.0',
+    'OpenSUSE Leap 15.1': 'opensuse/leap:15.1',
 
     'Ubuntu 18.04': 'ubuntu:18.04',
     'Ubuntu 19.04': 'ubuntu:19.04',
@@ -52,7 +53,7 @@ def package_info_command(pkgman, packages):
             packages_copy[packages_copy.index('python3')] = 'python'
         return 'pacman -Syi --noprogressbar {}'.format(' '.join(packages_copy))
     if pkgman == 'zypper':
-        return 'zypper info {}'.format(' '.join(packages))
+        return 'zypper --xmlout info {}'.format(' '.join(packages))
 
     raise Exception("Unknown package manager: {}".format(pkgman))
 
@@ -74,10 +75,9 @@ def parse_apt_dnf_zypper_info_common(output):
 
     package_info = {}
     for chunk in chunks:
-        print("chunk='", chunk, "'")
-
         data = parse_apt_dnf_zypper_chunk(chunk)
-        #print("DATA=", data, "---")
+
+        # pacman uses 'Package', apt/dnf/zypper use 'Name'
         name = data.get('Package', data.get('Name'))
 
         # DAMNIT ARCHLINUX.
@@ -86,7 +86,7 @@ def parse_apt_dnf_zypper_info_common(output):
 
         version = normalize_version(data['Version'])
         package_info[name] = version
-        print('package_info[{}] = {}'.format(name, version))
+        print("{:20} {}".format(name, version))
     return package_info
 
 
@@ -117,6 +117,14 @@ def parse_pacman_info(output):
 def parse_zypper_info(output):
     # Remove \r, collapse line continuations.
     output = output.replace("\r", "").replace("\n    ", ' ')
+
+    root = ET.fromstring(output)
+    messages = root.findall("./message[@type='info']")
+    messages = [msg.text for msg in messages]
+    messages = list(filter(lambda msg: ':' in msg, messages))
+
+    output = "\n\n".join(messages)
+
     return parse_apt_dnf_zypper_info_common(output)
 
 def parse_info(pkgman, output):
