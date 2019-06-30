@@ -57,6 +57,6 @@ th.left-header, th {
   padding-left: 1em;
 }
 
-[class^=pkg-]:target {
+[id^=pkg-]:target {
   background-color: #28a6af;
 }
