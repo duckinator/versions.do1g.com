@@ -1,9 +1,8 @@
 def info_command(packages):
-    cmd = 'sudo pkg update --quiet && sudo pkg rquery "%n %v %dn=%dv" {}'.format(' '.join(packages))
-
-    # HACK/TODO: Figure out why the hell clang isn't an actual package?!
     if 'clang' in packages:
-        cmd += ' && clang --version | head -n 1 | cut -d " " -f 2,4,9'
+        packages[packages.index('clang')] = 'llvm'
+
+    'sudo pkg update --quiet && sudo pkg rquery "%n %v %dn=%dv" {}'.format(' '.join(packages))
 
     return cmd
 
@@ -16,7 +15,12 @@ def parse_info(output):
     for line in lines:
         pkg, version, dep = line.split(' ')
         if dep.startswith(pkg):
-            version = dep.split('=')[1]
+            realpkg, version = dep.split('=')
         version = version.split('_')[0]
         info[pkg] = version
+
+        # clang is provided by the 'llvm<version>' package, in FreeBSD
+        if pkg == 'llvm':
+            info['clang'] = version + '(via {})'.format(realpkg)
+
     return info
