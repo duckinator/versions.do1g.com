@@ -2,9 +2,7 @@ def info_command(packages):
     if 'clang' in packages:
         packages[packages.index('clang')] = 'llvm'
 
-    'sudo pkg update --quiet && sudo pkg rquery "%n %v %dn=%dv" {}'.format(' '.join(packages))
-
-    return cmd
+    return 'sudo pkg update --quiet && sudo pkg rquery "%n %v %dn=%dv" {}'.format(' '.join(packages))
 
 
 def parse_info(output):
