@@ -27,24 +27,27 @@ class VagrantBox:
     def get_info(self, packages):
         old_cwd = os.getcwd()
         os.chdir(self.folder)
-        self.up()
+        try:
+            self.up()
 
-        shortname = self.name.replace(' BSD ', 'BSD ').split(' ')[0].lower()
+            shortname = self.name.replace(' BSD ', 'BSD ').split(' ')[0].lower()
 
-        module = {
-        #    'dragonflybsd': dragonflybsd,
-            'freebsd': freebsd,
-        #    'netbsd': netbsd,
-        #    'openbsd': openbsd,
-        }[shortname]
+            module = {
+            #    'dragonflybsd': dragonflybsd,
+                'freebsd': freebsd,
+            #    'netbsd': netbsd,
+            #    'openbsd': openbsd,
+            }[shortname]
 
-        command = module.info_command(packages)
-        output = self.run(command)
+            command = module.info_command(packages)
+            output = self.run(command)
 
-        self.halt()
-        os.chdir(old_cwd)
+            result = module.parse_info(output)
+        finally:
+            self.halt()
+            os.chdir(old_cwd)
 
-        return module.parse_info(output)
+        return result
 
 def get_info(image, packages):
     return VagrantBox(image).get_info(packages)
