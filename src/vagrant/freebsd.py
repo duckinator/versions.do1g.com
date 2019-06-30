@@ -19,6 +19,6 @@ def parse_info(output):
 
         # clang is provided by the 'llvm<version>' package, in FreeBSD
         if pkg == 'llvm':
-            info['clang'] = version + '(via {})'.format(realpkg)
+            info['clang'] = version + ' (via {})'.format(realpkg)
 
     return info
