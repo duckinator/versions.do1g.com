@@ -48,6 +48,10 @@ tr.header th:first-child, th.left-header {
   text-align: left;
 }
 
+td {
+  text-align: center;
+}
+
 th.left-header, td {
   padding: 1em 2em;
   min-width: 15ch;
