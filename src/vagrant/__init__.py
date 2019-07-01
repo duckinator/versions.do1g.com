@@ -3,6 +3,7 @@ from pathlib import Path
 from subprocess import check_output, check_call
 
 import vagrant.freebsd
+import vagrant.dragonflybsd
 
 
 class VagrantBox:
@@ -33,7 +34,7 @@ class VagrantBox:
             shortname = self.name.replace(' BSD ', 'BSD ').split(' ')[0].lower()
 
             module = {
-            #    'dragonflybsd': dragonflybsd,
+                'dragonflybsd': dragonflybsd,
                 'freebsd': freebsd,
             #    'netbsd': netbsd,
             #    'openbsd': openbsd,

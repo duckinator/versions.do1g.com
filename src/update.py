@@ -25,7 +25,7 @@ operating_systems = {
     'Ubuntu 18.04': [docker, 'ubuntu:18.04'],
     'Ubuntu 19.04': [docker, 'ubuntu:19.04'],
 
-    #'DragonFly BSD 5': [vagrant, 'DragonFly BSD 5'],
+    'DragonFly BSD 5': [vagrant, 'DragonFly BSD 5'],
     'FreeBSD 11': [vagrant, 'FreeBSD 11'],
     'FreeBSD 12': [vagrant, 'FreeBSD 12'],
     #'NetBSD 8': [vagrant, 'NetBSD 8'],
@@ -41,7 +41,6 @@ def get_info():
         module = parts[0]
         image = parts[1]
         print("Fetching information for {} using {}.".format(image, module.__name__.capitalize()))
-        #os_info[os_name] = docker.get_info(image, packages)
         os_info[os_name] = module.get_info(image, packages)
     return os_info
 
