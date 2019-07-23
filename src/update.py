@@ -14,7 +14,7 @@ operating_systems = {
     'ArchLinux': [docker, 'archlinux/base:latest'],
 
     'Debian 9': [docker, 'debian:9'],
-    'Debian 10': [docker, 'debian:buster'],
+    'Debian 10': [docker, 'debian:10'],
 
     'Fedora 29': [docker, 'fedora:29'],
     'Fedora 30': [docker, 'fedora:30'],
@@ -22,6 +22,7 @@ operating_systems = {
     'OpenSUSE Leap 15.0': [docker, 'opensuse/leap:15.0'],
     'OpenSUSE Leap 15.1': [docker, 'opensuse/leap:15.1'],
 
+    'Ubuntu 16.04': [docker, 'ubuntu:16.04'],
     'Ubuntu 18.04': [docker, 'ubuntu:18.04'],
     'Ubuntu 19.04': [docker, 'ubuntu:19.04'],
 
