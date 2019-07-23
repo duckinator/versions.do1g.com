@@ -6,6 +6,9 @@ from pathlib import Path
 import docker
 import vagrant
 
+import package_lifecycle
+
+
 # Format is:
 #   'Name': [backend_module, 'image name']
 operating_systems = {
@@ -84,7 +87,11 @@ def main():
             for os_name in os_info.keys():
                 if package_name in os_info[os_name]:
                     version = os_info[os_name][package_name]
-                    f.write("    <td>{}</td>\n".format(version))
+                    if package_lifecycle.supported(package_name, version):
+                        html_class = 'supported'
+                    else:
+                        html_class = 'unsupported'
+                    f.write("    <td class=\"{}\">{}</td>\n".format(html_class, version))
                 else:
                     f.write("    <td>??</td>\n")
             f.write("  </tr>\n")

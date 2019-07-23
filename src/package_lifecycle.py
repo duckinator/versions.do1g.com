@@ -34,7 +34,7 @@ def _normalize(versions):
     return [_normalize_version(version) for version in versions]
 
 
-def check(package, version):
+def supported(package, version):
     versions = all()[package]
     return any([V(version) >= V(v) for v in versions])
 
