@@ -87,7 +87,12 @@ def main():
             for os_name in os_info.keys():
                 if package_name in os_info[os_name]:
                     version = os_info[os_name][package_name]
-                    if package_lifecycle.supported(package_name, version):
+
+                    # HACK: Avoid including the "(via LLVM)" and similar
+                    #       notes in version comparisons.
+                    tmp_version = tmp_version.split(' (via ')[0]
+
+                    if package_lifecycle.supported(package_name, tmp_version):
                         html_class = 'supported'
                     else:
                         html_class = 'unsupported'
