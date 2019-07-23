@@ -6,6 +6,8 @@ def _normalize_version(version):
         version = version.split(':')[1]
     if '-' in version:
         version = version.split('-')[0]
+    if '+' in version:
+        version = version.split('+')[0]
     return version
 
 

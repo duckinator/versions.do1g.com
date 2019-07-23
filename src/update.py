@@ -90,7 +90,7 @@ def main():
 
                     # HACK: Avoid including the "(via LLVM)" and similar
                     #       notes in version comparisons.
-                    tmp_version = tmp_version.split(' (via ')[0]
+                    tmp_version = version.split(' (via&nbsp;')[0]
 
                     if package_lifecycle.supported(package_name, tmp_version):
                         html_class = 'supported'
