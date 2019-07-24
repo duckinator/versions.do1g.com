@@ -37,7 +37,7 @@ table {
 }
 
 tr:nth-child(even) {
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color: rgba(0, 0, 0, 0.125);
 }
 
 tr.header {
@@ -63,4 +63,13 @@ th.left-header, th {
 
 [id^=pkg-]:target {
   background-color: #28a6af;
+}
+
+.unsupported {
+  background-color: #e35966;
+}
+
+/* basically manually applying rgba(0, 0, 0, 0.125) overlay. */
+tr:nth-child(even) .unsupported {
+  background-color: #c74e59;
 }
