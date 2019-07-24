@@ -94,9 +94,11 @@ def main():
 
                     if package_lifecycle.supported(package_name, tmp_version):
                         html_class = 'supported'
+                        note = ''
                     else:
                         html_class = 'unsupported'
-                    f.write("    <td class=\"{}\">{}</td>\n".format(html_class, version))
+                        note = '<sup>[1]</sup>'
+                    f.write("    <td class=\"{}\">{} {}</td>\n".format(html_class, version, note))
                 else:
                     f.write("    <td>??</td>\n")
             f.write("  </tr>\n")

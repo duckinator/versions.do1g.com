@@ -22,6 +22,9 @@
 
 {{ table }}
 
+
+      <p></p>
+      <p><sup>[1]</sup> This version of the package is no longer supported by the developers.</p>
     </main>
   </body>
 </html>
