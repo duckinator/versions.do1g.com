@@ -73,3 +73,12 @@ th.left-header, th {
 tr:nth-child(even) .unsupported {
   background-color: #c74e59;
 }
+
+.outdated {
+  background-color: #be7c4d;
+}
+
+/* basically manually applying rgba(0, 0, 0, 0.125) overlay. */
+tr:nth-child(even) .outdated {
+  background-color: #a66d43;
+}
