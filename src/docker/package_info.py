@@ -40,7 +40,10 @@ def parse_common(output):
             name = 'python3'
 
         version = _normalize_version(data['Version'])
-        package_info[name] = version
+        package_info[name] = {
+            'version': version,
+            'via': None,
+        }
         print("{:20} {}".format(name, version))
     return package_info
 

@@ -15,10 +15,17 @@ def parse_info(output):
         if dep.startswith(pkg):
             realpkg, version = dep.split('=')
         version = version.split('_')[0]
-        info[pkg] = version
+        info[pkg] = {
+            'version': version,
+            'via': None,
+        }
 
         # clang is provided by the 'llvm<version>' package, in FreeBSD
         if pkg == 'llvm':
-            info['clang'] = version + ' (via&nbsp;{})'.format(pkg)
+            info['clang'] = {
+                'version': version,
+                'via': pkg,
+            }
+            #info['clang'] = '{}:via={}'.format(version, pkg)
 
     return info

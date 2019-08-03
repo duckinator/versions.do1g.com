@@ -126,5 +126,5 @@ def python3():
 
 
 def ruby():
-    versions = _get_html(urls['ruby']).xpath('//div[@id="content-wrapper"]/div/p[not(contains(text(), "status: eol"))]/preceding-sibling::h3/text()')
+    versions = _get_html(urls['ruby']).xpath('//div[@id="content-wrapper"]/div/p[contains(text(), "maintenance")]/preceding-sibling::h3/text()')
     return _normalize(versions)

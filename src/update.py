@@ -86,29 +86,32 @@ def main():
             f.write("    <th class='left-header'><a href='#pkg-{}'>{}</a></th>\n".format(package_name, package_name))
             for os_name in os_info.keys():
                 if package_name in os_info[os_name]:
-                    version = os_info[os_name][package_name]
+                    pkg_data = os_info[os_name][package_name]
 
-                    # HACK: Avoid including the "(via LLVM)" and similar
-                    #       notes in version comparisons.
-                    tmp_version = version.split(' (via&nbsp;')[0]
+                    version = pkg_data['version']
+                    via_package = pkg_data['via']
+                    if via_package is None:
+                        via = ''
+                    else:
+                        via = '(via&nbsp;{})'.format(via_package)
 
-                    if not package_lifecycle.supported(package_name, tmp_version):
-                        print("> {} {} {} = unsupported".format(os_name, package_name, tmp_version))
+                    if not package_lifecycle.supported(package_name, version):
+                        print("> {} {} {} = unsupported".format(os_name, package_name, version))
                         html_class = 'unsupported'
                         note = '[3]'
-                    elif package_lifecycle.outdated(package_name, tmp_version):
-                        print("> {} {} {} = outdated".format(os_name, package_name, tmp_version))
+                    elif package_lifecycle.outdated(package_name, version):
+                        print("> {} {} {} = outdated".format(os_name, package_name, version))
                         html_class = 'outdated'
                         note = '[2]'
-                    elif package_lifecycle.is_latest(package_name, tmp_version):
-                        print("> {} {} {} = latest".format(os_name, package_name, tmp_version))
+                    elif package_lifecycle.is_latest(package_name, version):
+                        print("> {} {} {} = latest".format(os_name, package_name, version))
                         html_class = 'latest'
                         note = '[1]'
                     else:
-                        print("> {} {} {} = supported".format(os_name, package_name, tmp_version))
+                        print("> {} {} {} = supported".format(os_name, package_name, version))
                         html_class = 'supported'
                         note = '[1]'
-                    f.write("    <td class=\"{}\">{} <sup>{}</sup></td>\n".format(html_class, version, note))
+                    f.write("    <td class=\"{}\">{}&nbsp;<sup>{}</sup> {}</td>\n".format(html_class, version, note, via))
                 else:
                     f.write("    <td>??</td>\n")
             f.write("  </tr>\n")
