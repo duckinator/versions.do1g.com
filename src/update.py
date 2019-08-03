@@ -95,7 +95,7 @@ def main():
                     if not package_lifecycle.supported(package_name, tmp_version):
                         print("> {} {} {} = unsupported".format(os_name, package_name, tmp_version))
                         html_class = 'unsupported'
-                        note = '[1]'
+                        note = '[3]'
                     elif package_lifecycle.outdated(package_name, tmp_version):
                         print("> {} {} {} = outdated".format(os_name, package_name, tmp_version))
                         html_class = 'outdated'
@@ -103,11 +103,11 @@ def main():
                     elif package_lifecycle.is_latest(package_name, tmp_version):
                         print("> {} {} {} = latest".format(os_name, package_name, tmp_version))
                         html_class = 'latest'
-                        note = ''
+                        note = '[1]'
                     else:
                         print("> {} {} {} = supported".format(os_name, package_name, tmp_version))
                         html_class = 'supported'
-                        note = ''
+                        note = '[1]'
                     f.write("    <td class=\"{}\">{} <sup>{}</sup></td>\n".format(html_class, version, note))
                 else:
                     f.write("    <td>??</td>\n")
