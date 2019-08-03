@@ -79,7 +79,7 @@ def main():
         f.write("  <tr class='header'>\n")
         f.write("    <th>Package</th>\n")
         for os_name in os_info.keys():
-            f.write("    <th>{}</th>\n".format(os_name))
+            f.write("    <th>{} <sup></sup></th>\n".format(os_name))
         f.write("  </tr>\n")
         for package_name in packages:
             f.write("  <tr id='pkg-{}'>\n".format(package_name))
@@ -92,13 +92,23 @@ def main():
                     #       notes in version comparisons.
                     tmp_version = version.split(' (via&nbsp;')[0]
 
-                    if package_lifecycle.supported(package_name, tmp_version):
-                        html_class = 'supported'
+                    if not package_lifecycle.supported(package_name, tmp_version):
+                        print("> {} {} {} = unsupported".format(os_name, package_name, tmp_version))
+                        html_class = 'unsupported'
+                        note = '[1]'
+                    elif package_lifecycle.outdated(package_name, tmp_version):
+                        print("> {} {} {} = outdated".format(os_name, package_name, tmp_version))
+                        html_class = 'outdated'
+                        note = '[2]'
+                    elif package_lifecycle.is_latest(package_name, tmp_version):
+                        print("> {} {} {} = latest".format(os_name, package_name, tmp_version))
+                        html_class = 'latest'
                         note = ''
                     else:
-                        html_class = 'unsupported'
-                        note = '<sup>[1]</sup>'
-                    f.write("    <td class=\"{}\">{} {}</td>\n".format(html_class, version, note))
+                        print("> {} {} {} = supported".format(os_name, package_name, tmp_version))
+                        html_class = 'supported'
+                        note = ''
+                    f.write("    <td class=\"{}\">{} <sup>{}</sup></td>\n".format(html_class, version, note))
                 else:
                     f.write("    <td>??</td>\n")
             f.write("  </tr>\n")
