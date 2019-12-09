@@ -11,7 +11,7 @@ archlinux_task:
     matrix:
       - image: archlinux:latest
   install_script:
-    - pacman -S python3
+    - pacman -Sy python3
   script: ./scripts/archlinux.py
 
 fedora_task:
@@ -40,8 +40,8 @@ debian_and_ubuntu_task:
       - image: ubuntu:19.04
       - image: ubuntu:19.10
   install_script:
-    - apt update
-    - apt install python3
+    - apt-get -y update
+    - apt-get -y install python3
   script:
     - ./scripts/debian-based.py
 
