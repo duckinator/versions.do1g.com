@@ -10,6 +10,8 @@ archlinux_task:
   container:
     matrix:
       - image: archlinux:latest
+  install_script:
+    - pacman -S python3
   script: ./scripts/archlinux.py
 
 fedora_task:
@@ -17,6 +19,8 @@ fedora_task:
     matrix:
       - image: fedora:29
       - image: fedora:30
+  install_script:
+    - dnf install python3
   script: ./scripts/fedora.py
 
 opensuse_task:
@@ -35,7 +39,11 @@ debian_and_ubuntu_task:
       - image: ubuntu:18.04
       - image: ubuntu:19.04
       - image: ubuntu:19.10
-  script: ./scripts/debian-based.py
+  install_script:
+    - apt update
+    - apt install python3
+  script:
+    - ./scripts/debian-based.py
 
 FreeBSD_task:
   freebsd_instance:
