@@ -10,8 +10,8 @@ archlinux_task:
   container:
     matrix:
       - image: archlinux:latest
-  install_script:
-    - pacman -Sy python3
+      - image: manjarolinux/base:latest
+  install_script: pacman -Sy --noconfirm python3
   script: ./scripts/archlinux.py
 
 fedora_task:
@@ -19,8 +19,6 @@ fedora_task:
     matrix:
       - image: fedora:29
       - image: fedora:30
-  install_script:
-    - dnf install python3
   script: ./scripts/fedora.py
 
 opensuse_task:
@@ -28,6 +26,7 @@ opensuse_task:
     matrix:
       - image: opensuse/leap:15.0
       - image: opensuse/leap:15.1
+  install_script: zypper install --no-confirm python3
   script: ./scripts/opensuse.py
 
 debian_and_ubuntu_task:
