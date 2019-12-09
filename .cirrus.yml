@@ -1,0 +1,46 @@
+# Allow compute credits usage for collaborators and anything pushed to the
+# master, staging, and trying branches. (So bors can use them.)
+use_compute_credits: $CIRRUS_USER_COLLABORATOR == 'true' || $CIRRUS_BRANCH == 'master' || $CIRRUS_BRANCH == 'staging' || $CIRRUS_BRANCH == 'trying'
+
+#web_artifacts:
+#  path: "output/*.json"
+#  type: application/json
+
+archlinux_task:
+  container:
+    matrix:
+      - image: archlinux:latest
+  script: ./scripts/archlinux.py
+
+fedora_task:
+  container:
+    matrix:
+      - image: fedora:29
+      - image: fedora:30
+  script: ./scripts/fedora.py
+
+opensuse_task:
+  container:
+    matrix:
+      - image: opensuse/leap:15.0
+      - image: opensuse/leap:15.1
+  script: ./scripts/opensuse.py
+
+debian_and_ubuntu_task:
+  container:
+    matrix:
+      - image: debian:9
+      - image: debian:10
+      - image: ubuntu:16.04
+      - image: ubuntu:18.04
+      - image: ubuntu:19.04
+      - image: ubuntu:19.10
+  script: ./scripts/debian-based.py
+
+FreeBSD_task:
+  freebsd_instance:
+    matrix:
+      - image_family: freebsd-11-3-snap
+      - image_family: freebsd-12-1-snap
+      - image_family: freebsd-13-0-snap
+  script: ./scripts/freebsd.py
