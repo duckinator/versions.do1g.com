@@ -12,14 +12,14 @@ archlinux_task:
       - image: archlinux:latest
       - image: manjarolinux/base:latest
   install_script: pacman -Sy --noconfirm python3
-  script: ./scripts/archlinux.py
+  script: python3 -m check_versions
 
 fedora_task:
   container:
     matrix:
       - image: fedora:29
       - image: fedora:30
-  script: ./scripts/fedora.py
+  script: python3 -m check_versions
 
 opensuse_task:
   container:
@@ -27,7 +27,7 @@ opensuse_task:
       - image: opensuse/leap:15.0
       - image: opensuse/leap:15.1
   install_script: zypper install --no-confirm python3
-  script: ./scripts/opensuse.py
+  script: python3 -m check_versions
 
 debian_and_ubuntu_task:
   container:
@@ -41,8 +41,7 @@ debian_and_ubuntu_task:
   install_script:
     - apt-get -y update
     - apt-get -y install python3
-  script:
-    - ./scripts/debian-based.py
+  script: python3 -m check_versions
 
 FreeBSD_task:
   freebsd_instance:
@@ -50,4 +49,4 @@ FreeBSD_task:
       - image_family: freebsd-11-3-snap
       - image_family: freebsd-12-1-snap
       - image_family: freebsd-13-0-snap
-  script: ./scripts/freebsd.py
+  script: python3 -m check_versions
