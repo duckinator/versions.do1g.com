@@ -14,7 +14,7 @@ import package_lifecycle
 operating_systems = {
     # Linux distros
 
-    'ArchLinux': [docker, 'archlinux/base:latest'],
+    'ArchLinux': [docker, 'archlinux:latest'],
 
     'Debian 9': [docker, 'debian:9'],
     'Debian 10': [docker, 'debian:10'],
