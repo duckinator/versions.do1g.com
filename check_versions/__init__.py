@@ -21,7 +21,18 @@ def os_release():
 
 def main(argv):
     # Detect the operating system name/description.
-    if is_linux():
+    if is_linux() and Path('/etc/arch-release').exists() and not Path('/etc/arch-release').read_text():
+        # If /etc/arch-release exists and is empty, it's probably ArchLinux.
+        # If /etc/arch-release exists and isn't empty, it's probably
+        # Manjaro -- which gets handled using the normal os_release() approach.
+        # If another Arch-based system without /etc/os-release is found,
+        # we'll need to revisit this.
+        #
+        # TODO: See if there's an Arch package that provides /etc/os-release
+        #       so we can remove this obnoxious special case.
+        os_name = 'ArchLinux'
+        os_desc = os_name
+    elif is_linux():
         os_name = os_release()['NAME']
         os_version = os_release().get('VERSION_ID', '')
 
