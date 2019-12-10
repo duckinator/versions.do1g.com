@@ -34,6 +34,10 @@ def main(argv):
         os_desc = os_name
     elif is_linux():
         os_name = os_release()['NAME']
+
+        # Keeping name length reasonable is more important than GNU's ego.
+        os_name = os_name.replace(' GNU/Linux', '')
+
         os_version = os_release().get('VERSION_ID', '')
 
         if os_version:
