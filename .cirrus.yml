@@ -3,7 +3,7 @@
 use_compute_credits: $CIRRUS_USER_COLLABORATOR == 'true' || $CIRRUS_BRANCH == 'master' || $CIRRUS_BRANCH == 'staging' || $CIRRUS_BRANCH == 'trying'
 
 web_artifacts:
-  path: "_site/*.json"
+  path: "source/*.json"
   type: application/json
 
 archlinux_and_manjaro_task:
@@ -60,7 +60,8 @@ publish_task:
     - opensuse
     - debian_and_ubuntu
     - freebsd
-  container: current-buster-slim
+  container:
+    image: nodejs:current-buster-slim
   env:
     NETLIFY_AUTH_TOKEN: ENCRYPTED[ec6da05d365917ed543e307555cbd9c618bbd41db7dee828daf7b01825adef48f547db89ead63b99418fe07a9d41b43a]
     NETLIFY_SITE_ID: ENCRYPTED[a408add4551cd62fe8a5a912569fda66b5e991dd1097a8eaf0a6479179a07a6ec3e5d9e0c67d16f61c67a6721a728a91]
@@ -69,5 +70,5 @@ publish_task:
     - apt update
     - apt install python3
   script:
-    - python3 -m generate_site ./_site
+    - python3 -m generate_site ./source ./_site
     #- netlify deploy --dir=_site

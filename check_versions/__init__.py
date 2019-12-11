@@ -88,7 +88,7 @@ def main(argv):
     }
     #print(parsed_output)
     print()
-    filename = '_site/{}.json'.format(os_id)
+    filename = 'source/{}.json'.format(os_id)
     print("Saving data to:", filename)
     Path(filename).write_text(json.dumps(data))
     print("File contents:")
