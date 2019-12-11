@@ -6,7 +6,7 @@ web_artifacts:
   path: "_site/*.json"
   type: application/json
 
-archlinux_task:
+archlinux_and_manjaro_task:
   container:
     matrix:
       - image: archlinux:latest
@@ -55,10 +55,10 @@ freebsd_task:
 
 publish_task:
   depends_on:
-    - archlinux
+    - archlinux_and_manjaro
     - fedora
     - opensuse
-    - debian
+    - debian_and_ubuntu
     - freebsd
   container: current-buster-slim
   env:
