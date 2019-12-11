@@ -2,9 +2,9 @@
 # master, staging, and trying branches. (So bors can use them.)
 use_compute_credits: $CIRRUS_USER_COLLABORATOR == 'true' || $CIRRUS_BRANCH == 'master' || $CIRRUS_BRANCH == 'staging' || $CIRRUS_BRANCH == 'trying'
 
-#web_artifacts:
-#  path: "output/*.json"
-#  type: application/json
+web_artifacts:
+  path: "output/*.json"
+  type: application/json
 
 archlinux_task:
   container:
@@ -43,7 +43,7 @@ debian_and_ubuntu_task:
     - apt-get -y install python3
   script: python3 -m check_versions
 
-FreeBSD_task:
+freebsd_task:
   freebsd_instance:
     matrix:
       - image_family: freebsd-11-3-snap
@@ -52,3 +52,22 @@ FreeBSD_task:
   install_script:
     - pkg update
   script: python3 -m check_versions
+
+publish_task:
+  depends_on:
+    - archlinux
+    - fedora
+    - opensuse
+    - debian
+    - freebsd
+  container: current-buster-slim
+  env:
+    NETLIFY_AUTH_TOKEN: ENCRYPTED[ec6da05d365917ed543e307555cbd9c618bbd41db7dee828daf7b01825adef48f547db89ead63b99418fe07a9d41b43a]
+    NETLIFY_SITE_ID: ENCRYPTED[a408add4551cd62fe8a5a912569fda66b5e991dd1097a8eaf0a6479179a07a6ec3e5d9e0c67d16f61c67a6721a728a91]
+  install_script:
+    - npm install netlify-cli -g
+    - apt update
+    - apt install python3
+  script:
+    - python3 -m generate_site ./_site
+    #- netlify deploy --dir=_site
