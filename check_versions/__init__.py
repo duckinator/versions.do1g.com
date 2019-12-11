@@ -65,8 +65,8 @@ def main(argv):
         os_name = 'FreeBSD'
         os_desc = run('uname -sr')
 
-    module_part = os_name.lower().replace(' ', '_')
-    module_name = '.output_parsers.{}'.format(module_part)
+    os_id = os_name.lower().replace(' ', '_')
+    module_name = '.output_parsers.{}'.format(os_id)
 
     # E.g.,
     # - If os_name is 'openSUSE Leap', module is .check_versions.opensuse_leap.
@@ -78,5 +78,17 @@ def main(argv):
     print()
     print('OS name: {}'.format(os_name))
     print('OS desc: {}'.format(os_desc))
-    print("Parsed output:")
-    print(module.parse_info(output))
+    #print("Parsed output:")
+    parsed_output = module.parse_info(output)
+    data = {
+        'name': os_name,
+        'description': os_desc,
+        'results': parsed_output,
+    }
+    #print(parsed_output)
+    print()
+    filename = '_site/{}.json'.format(os_id)
+    print("Saving data to:", filename)
+    Path(filename).write_text(json.dumps(data))
+    print("File contents:")
+    print(Path(filename).read_text())

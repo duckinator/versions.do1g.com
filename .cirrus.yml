@@ -3,7 +3,7 @@
 use_compute_credits: $CIRRUS_USER_COLLABORATOR == 'true' || $CIRRUS_BRANCH == 'master' || $CIRRUS_BRANCH == 'staging' || $CIRRUS_BRANCH == 'trying'
 
 web_artifacts:
-  path: "output/*.json"
+  path: "_site/*.json"
   type: application/json
 
 archlinux_task:
