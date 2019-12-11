@@ -66,7 +66,7 @@ def main(argv):
         os_name = 'FreeBSD'
         os_desc = run('uname -sr')
 
-    os_id = os_name.lower().replace(' ', '_')
+    os_id = os_desc.lower().replace(' ', '_')
     module_name = '.output_parsers.{}'.format(os_id)
 
     # E.g.,
