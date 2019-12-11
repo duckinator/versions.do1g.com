@@ -88,6 +88,7 @@ def main(argv):
     }
     #print(parsed_output)
     print()
+    Path('source').mkdir(exist_ok=True)
     filename = 'source/{}.json'.format(os_id)
     print("Saving data to:", filename)
     Path(filename).write_text(json.dumps(data))
