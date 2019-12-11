@@ -66,7 +66,8 @@ def main(argv):
         os_name = 'FreeBSD'
         os_desc = run('uname -sr')
 
-    os_id = os_desc.lower().replace(' ', '_')
+    os_id = os_name.lower().replace(' ', '_')
+    os_filename_id = os_desc.lower().replace(' ', '_')
     module_name = '.output_parsers.{}'.format(os_id)
 
     # E.g.,
@@ -89,7 +90,7 @@ def main(argv):
     #print(parsed_output)
     print()
     Path('source').mkdir(exist_ok=True)
-    filename = 'source/{}.json'.format(os_id)
+    filename = 'source/{}.json'.format(os_filename_id)
     print("Saving data to:", filename)
     Path(filename).write_text(json.dumps(data))
     print("File contents:")
