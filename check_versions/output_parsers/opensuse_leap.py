@@ -5,7 +5,7 @@ def setup_command():
     return None
 
 
-def parse_info(packages):
+def info_command(packages):
     return 'zypper --xmlout info {}'.format(' '.join(packages))
 
 
