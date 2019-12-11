@@ -1,1 +1,1 @@
-from .debian import info_command, parse_info
+from .debian import setup_command, info_command, parse_info
