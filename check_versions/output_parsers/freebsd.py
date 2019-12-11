@@ -1,7 +1,3 @@
-def setup_command():
-    return 'sudo pkg update --quiet'
-
-
 def info_command(packages):
     if 'clang' in packages:
         packages[packages.index('clang')] = 'llvm'

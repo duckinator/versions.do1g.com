@@ -1,10 +1,6 @@
 from .linux_common import common_parse_info
 
 
-def setup_command():
-    return None
-
-
 def info_command(packages):
     # ArchLinux calls their python 3.x package 'python', not 'python3'.
     # Unlike basically everything else I've ever encountered.

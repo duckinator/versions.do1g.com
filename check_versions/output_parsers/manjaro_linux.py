@@ -1,1 +1,1 @@
-from .archlinux import setup_command, info_command, parse_info
+from .archlinux import info_command, parse_info

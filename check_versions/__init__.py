@@ -74,11 +74,6 @@ def main(argv):
     # etc.
     module = import_module(module_name, package='check_versions')
 
-    setup_cmd = module.setup_command()
-
-    if setup_cmd:
-        run(setup_cmd)
-
     output = run(module.info_command(packages))
     print()
     print('OS name: {}'.format(os_name))
