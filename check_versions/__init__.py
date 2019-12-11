@@ -5,13 +5,6 @@ import shlex
 from subprocess import check_output
 import sys
 
-from .output_parsers import debian
-from .output_parsers import fedora
-from .output_parsers import freebsd
-from .output_parsers import manjaro
-from .output_parsers import opensuse_leap
-from .output_parsers import ubuntu
-
 
 def run(cmd):
     print('$', cmd)
