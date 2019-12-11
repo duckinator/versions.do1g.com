@@ -2,10 +2,6 @@
 # master, staging, and trying branches. (So bors can use them.)
 use_compute_credits: $CIRRUS_USER_COLLABORATOR == 'true' || $CIRRUS_BRANCH == 'master' || $CIRRUS_BRANCH == 'staging' || $CIRRUS_BRANCH == 'trying'
 
-web_artifacts:
-  path: "source/*.json"
-  type: application/json
-
 archlinux_and_manjaro_task:
   container:
     matrix:
@@ -13,6 +9,8 @@ archlinux_and_manjaro_task:
       - image: manjarolinux/base:latest
   install_script: pacman -Sy --noconfirm python3
   script: python3 -m check_versions
+  json_artifacts:
+    path: "source/*.json"
 
 fedora_task:
   container:
@@ -20,6 +18,8 @@ fedora_task:
       - image: fedora:29
       - image: fedora:30
   script: python3 -m check_versions
+  json_artifacts:
+    path: "source/*.json"
 
 opensuse_task:
   container:
@@ -28,6 +28,8 @@ opensuse_task:
       - image: opensuse/leap:15.1
   install_script: zypper install --no-confirm python3
   script: python3 -m check_versions
+  json_artifacts:
+    path: "source/*.json"
 
 debian_and_ubuntu_task:
   container:
@@ -42,6 +44,8 @@ debian_and_ubuntu_task:
     - apt-get -y update
     - apt-get -y install python3
   script: python3 -m check_versions
+  json_artifacts:
+    path: "source/*.json"
 
 freebsd_task:
   freebsd_instance:
@@ -52,6 +56,8 @@ freebsd_task:
   install_script:
     - pkg update
   script: python3 -m check_versions
+  json_artifacts:
+    path: "source/*.json"
 
 publish_task:
   depends_on:
@@ -70,6 +76,7 @@ publish_task:
     - apt-get -y install python3 nodejs npm
     - npm install netlify-cli -g
   script:
-    - bash -c 'for x in $(echo source/*.json); do echo ">> $x"; cat $x; echo; echo; done'
-    - python3 -m generate_site ./source ./_site
+    #- bash -c 'for x in $(echo source/*.json); do echo ">> $x"; cat $x; echo; echo; done'
+    #- python3 -m generate_site ./source ./_site
     #- netlify deploy --dir=_site
+    - echo awoo
