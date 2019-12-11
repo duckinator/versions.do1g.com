@@ -7,7 +7,7 @@ def setup_command():
 
 def info_command(packages):
     packages = list(map(lambda x: x + '.x86_64', packages))
-    return ['dnf info --color=false {}'.format(' '.join(packages))]
+    return 'dnf info --color=false {}'.format(' '.join(packages))
 
 
 def parse_info(output):
