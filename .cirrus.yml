@@ -60,7 +60,7 @@ freebsd_task:
     path: "source/*.json"
 
 publish_task:
-  only_if: $BRANCH == 'master'
+  #only_if: $BRANCH == 'master'
   depends_on:
     - archlinux_and_manjaro
     - fedora
@@ -78,5 +78,7 @@ publish_task:
     - npm install netlify-cli -g
   script:
     - python3 -m generate_site $CIRRUS_BUILD_ID
+    - ls _site/
+    - cat _site/index.html
     #- netlify deploy --dir=_site
     - echo awoo
