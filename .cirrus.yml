@@ -60,6 +60,7 @@ freebsd_task:
     path: "source/*.json"
 
 publish_task:
+  only_if: $BRANCH == 'master'
   depends_on:
     - archlinux_and_manjaro
     - fedora
