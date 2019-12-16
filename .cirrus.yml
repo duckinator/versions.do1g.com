@@ -77,7 +77,7 @@ publish_task:
     - npm install netlify-cli -g
   script:
     - python3 -m generate_site $CIRRUS_BUILD_ID
-    - ls _data/
+    - ls _data/source/
     - ls _site/
     - cat _site/index.html
     #- netlify deploy --dir=_site
