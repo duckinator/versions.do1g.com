@@ -2,6 +2,18 @@
 # master, staging, and trying branches. (So bors can use them.)
 use_compute_credits: $CIRRUS_USER_COLLABORATOR == 'true' || $CIRRUS_BRANCH == 'master' || $CIRRUS_BRANCH == 'staging' || $CIRRUS_BRANCH == 'trying'
 
+lint_task:
+  allow_failures: true
+  container: python:3-slim
+  install_script:
+    - pip3 install pylint
+  check_versions_script:
+    - pylint check_versions/
+  generate_site_script:
+    - pylint generate_site/
+  src_script:
+    - pylint src/
+
 archlinux_and_manjaro_task:
   container:
     matrix:
