@@ -4,7 +4,8 @@ use_compute_credits: $CIRRUS_USER_COLLABORATOR == 'true' || $CIRRUS_BRANCH == 'm
 
 lint_task:
   allow_failures: true
-  container: python:3-slim
+  container:
+    image: python:3-slim
   install_script:
     - pip3 install pylint
   check_versions_script:
