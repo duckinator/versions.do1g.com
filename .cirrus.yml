@@ -12,8 +12,6 @@ lint_task:
     - pylint check_versions/
   generate_site_script:
     - pylint generate_site/
-  src_script:
-    - pylint src/
 
 archlinux_and_manjaro_task:
   container:
