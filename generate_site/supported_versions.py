@@ -1,7 +1,9 @@
+"""Fetches lists of supported versions for various software."""
+
 from functools import lru_cache as memoize
+from urllib.request import urlopen
 from lxml import html
 from pkg_resources import parse_version as V
-from urllib.request import urlopen
 
 
 urls = {
@@ -35,22 +37,34 @@ def _normalize(versions):
 
 
 def is_latest(package, version):
+    """Determine if +version+ is the latest version of +package+.
+
+    Returns True if it is; False otherwise.
+    """
     latest = list(reversed(sorted(all()[package])))[0]
     print("  {} >= {}?".format(version, latest))
     return loose_ge(version, latest)
 
 
 def supported(package, version):
+    """Determine if version +version+ of +package+ is still supported.
+
+    Returns True if it is; False otherwise.
+    """
     versions = all()[package]
     return any([V(version) >= V(v) for v in versions])
 
 
 def outdated(package, version):
-    versions = all()[package]
+    """Determine if version +version+ of +package+ is supported but not latest.
+
+    Returns True if it is; False otherwise.
+    """
+    # versions = all()[package]
 
     # Ignore anything with only 1 version available.
-    #if len(versions) == 1:
-    #    return False
+    # if len(versions) == 1:
+    #     return False
 
     return number_newer(package, version) >= 2
 
@@ -65,23 +79,27 @@ def _loose_compare(v1, v2, fn):
 
 
 def loose_ge(v1, v2):
+    """TODO: Figure out wtf this does, again."""
     return _loose_compare(v1, v2, lambda a, b: a >= b)
 
 
 def loose_eq(v1, v2):
+    """TODO: Figure out wtf this does, again."""
     return _loose_compare(v1, v2, lambda a, b: a == b)
 
 
 def loose_gt(v1, v2):
+    """TODO: Figure out wtf this does, again."""
     return _loose_compare(v1, v2, lambda a, b: a > b)
 
 
 def loose_lt(v1, v2):
+    """TODO: Figure out wtf this does, again."""
     return _loose_compare(v1, v2, lambda a, b: a < b)
 
 
-# The number of all versions for `package` which are newer than `version`.
 def number_newer(package, version):
+    """Return number of versions of `package` which are newer than `version`."""
     versions = list(reversed(sorted(all()[package])))
     for idx in range(0, len(versions)):
         if loose_gt(version, versions[idx]):
@@ -91,14 +109,15 @@ def number_newer(package, version):
     return len(versions)
 
 
-# The percentage of all versions for `package` which are newer than `version`.
 def percent_newer(package, version):
+    """Return percentage of `package` versions which are newer than `version`."""
     num_newer = number_newer(package, version)
     num_versions = len(all()[package])
     return int(float(num_newer) / num_versions * 100)
 
 
 def all():
+    """Return information about all software we check."""
     return {
         'clang': clang(),
         'gcc': gcc(),
@@ -108,16 +127,19 @@ def all():
 
 
 def clang():
+    """Return supported versions of Clang."""
     versions = _get_html(urls['clang']).xpath('//a[starts-with(@href, "/releases/download.html#")]/b/text()')
     return _normalize(versions)
 
 
 def gcc():
+    """Return supported versions of GCC."""
     versions = _get_html(urls['gcc']).xpath('//td/dl/dt/span[@class="version"]/a/text()')
     return _normalize(versions)
 
 
 def python3():
+    """Return supported versions of Python3."""
     versions = _get_html(urls['python3']).xpath('//div[@id="status-of-python-branches"]/table[1]//tr/td[1][starts-with(text(), "3.")]/text()')
     # FIXME: figure out how to automate removing unreleased versions, instead
     #        of hard-coding things.
@@ -126,6 +148,7 @@ def python3():
 
 
 def ruby():
+    """Return supported versions of Ruby."""
     versions = _get_html(urls['ruby']).xpath('//div[@id="content-wrapper"]/div/p[contains(text(), "maintenance")]/preceding-sibling::h3/text()')
     # FIXME: go based off which versions have a "preview" status, instead
     #        of hard-coding things.
