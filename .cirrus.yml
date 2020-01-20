@@ -8,10 +8,8 @@ lint_task:
     image: python:3-slim
   install_script:
     - pip3 install pylint
-  check_versions_script:
-    - pylint check_versions/
-  generate_site_script:
-    - pylint generate_site/
+  script:
+    - pylint check_versions/ generate_site/
 
 archlinux_and_manjaro_task:
   container:
