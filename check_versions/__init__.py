@@ -1,12 +1,16 @@
+"""Check the available versions of various packages on the current system."""
+
 from functools import lru_cache as memoize
 from importlib import import_module
 import json
 from pathlib import Path
 import shlex
 from subprocess import check_output
-import sys
+# import sys
+
 
 def run(cmd):
+    """Print the command being run, runs it, and prints its output."""
     print('$', cmd)
     args = shlex.split(cmd)
     output = check_output(args).decode().strip()
@@ -18,15 +22,19 @@ def run(cmd):
 # We memoize() is_linux() to avoid running the same command repeatedly.
 @memoize()
 def is_linux():
+    """Return True if the system is running Linux; False otherwise."""
     return run('uname -s') == 'Linux'
 
 
 # We memoize() is_freebsd() to avoid running the same command repeatedly.
+# FIXME: actually memoize() this. (avoiding changing functionality atm.)
 def is_freebsd():
+    """Return True if the system is running FreeBSD; False otherwise."""
     return run('uname -s') == 'FreeBSD'
 
 
 def os_release():
+    """Return a dict containing a normalized version of /etc/os-release."""
     os_info = dict([x.split('=', 1) for x in Path('/etc/os-release').read_text().strip().split('\n')])
     for k in os_info.keys():
         if os_info[k].startswith('"') and os_info[k].endswith('"'):
@@ -34,7 +42,8 @@ def os_release():
     return os_info
 
 
-def main(argv):
+def main(_argv):
+    """Entrypoint for the script."""
     packages = ['python3', 'ruby', 'clang', 'gcc']
 
     # Detect the operating system name/description.
@@ -79,14 +88,14 @@ def main(argv):
     print()
     print('OS name: {}'.format(os_name))
     print('OS desc: {}'.format(os_desc))
-    #print("Parsed output:")
+    # print("Parsed output:")
     parsed_output = module.parse_info(output)
     data = {
         'name': os_name,
         'description': os_desc,
         'results': parsed_output,
     }
-    #print(parsed_output)
+    # print(parsed_output)
     print()
     Path('source').mkdir(exist_ok=True)
     filename = 'source/{}.json'.format(os_filename_id)
