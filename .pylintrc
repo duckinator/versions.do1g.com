@@ -22,7 +22,8 @@ enable=all
 
 # Disable the message, report, category or checker with the given id(s).
 disable=invalid-name,
-#disable=missing-docstring,
+        fixme, # TODO: Remove this ones the various fixmes are dealt with.
+#        missing-docstring,
 #        bad-whitespace,
 #        bad-continuation,
 
