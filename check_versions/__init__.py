@@ -35,7 +35,8 @@ def is_freebsd():
 
 def os_release():
     """Return a dict containing a normalized version of /etc/os-release."""
-    os_info = dict([x.split('=', 1) for x in Path('/etc/os-release').read_text().strip().split('\n')])
+    lines = Path('/etc/os-release').read_text().strip().split('\n')
+    os_info = dict([x.split('=', 1) for x in lines])
     for k in os_info.keys():
         if os_info[k].startswith('"') and os_info[k].endswith('"'):
             os_info[k] = os_info[k][1:-1]
@@ -47,7 +48,9 @@ def main(_argv):
     packages = ['python3', 'ruby', 'clang', 'gcc']
 
     # Detect the operating system name/description.
-    if is_linux() and Path('/etc/arch-release').exists() and not Path('/etc/arch-release').read_text():
+    if (is_linux() and
+            Path('/etc/arch-release').exists() and
+            not Path('/etc/arch-release').read_text()):
         # If /etc/arch-release exists and is empty, it's probably ArchLinux.
         # If /etc/arch-release exists and isn't empty, it's probably
         # Manjaro -- which gets handled using the normal os_release() approach.
