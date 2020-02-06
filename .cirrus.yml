@@ -7,7 +7,7 @@ lint_task:
   container:
     image: python:3-slim
   install_script:
-    - apt-get install -y python3-lxml
+    - apt-get update && apt-get install -y python3-lxml
     - pip3 install pylint
   script:
     - pylint check_versions/ generate_site/
