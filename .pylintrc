@@ -26,6 +26,9 @@ enable=all
 # Disable the message, report, category or checker with the given id(s).
 disable=invalid-name,
         fixme, # TODO: Remove this ones the various fixmes are dealt with.
+        redefined-builtin, # for all()
+        missing-module-docstring,
+        consider-using-enumerate, # TODO: Remove this one once it's dealt with.
 #        missing-docstring,
 #        bad-whitespace,
 #        bad-continuation,
