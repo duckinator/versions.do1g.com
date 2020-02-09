@@ -64,12 +64,21 @@ def normalized_data():
     return data
 
 
-def maintenance_status(pkg_data, version):
-    """Returns one of 'latest', 'outdated', or 'unsupported'.
+def maintenance_status(pkg_versions, version):
+    """Returns one of 'latest', 'outdated', 'unsupported', or 'unknown'.
     These are used as class names in the generated HTML."""
-    # TODO: Actually return something besides 'latest'.
-    # 'latest', 'outdated', 'unsupported'
-    print("maintenance_status({}, {})".format(repr(pkg_data), repr(version)))
+
+    print("maintenance_status({!r}, {!r})".format(pkg_data, version))
+
+    if len(pkg_versions) == 0:
+        return 'unknown'
+
+    if version not in pkg_versions:
+        return 'unsupported'
+
+    if sorted(pkg_versions)[0] != version:
+        return 'outdated'
+
     return 'latest'
 
 
@@ -80,19 +89,20 @@ def maintenance_status_note(pkg_data, version):
         'latest': '1',
         'outdated': '2',
         'unsupported': '3',
+        'unknown': '4',
     }[maintenance_status(pkg_data, version)]
 
 
 def build_table():
     """Generate a table of version information."""
+    os_data = normalized_data()
     table = [
         "<table>",
         '  <tr class="header">',
         '    <th>Package</th>',
-        *[f'    <th>{os}</th>' for os in os_names()],
+        *['    <th>{os}</th>'.format(os_data[os]['description']) for os in os_names()],
         '  </tr>',
     ]
-    os_data = normalized_data()
     for package, pkg_data in supported_versions.all().items():
         table.append(f'  <tr id="pkg-{package}">')
         table.append(f'    <th class="left-header"><a href="#pkg-{package}">{package}</a></th>')
