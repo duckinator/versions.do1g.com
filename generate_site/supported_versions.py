@@ -72,7 +72,11 @@ def outdated(package, version):
     return number_newer(package, version) >= 2
 
 
-def unknown(package, version):
+def unknown(package, _version):
+    """Determine if it is unknown whether +_version+ of +package+ is supported.
+
+    Returns True if it is; False otherwise.
+    """
     return len(all()[package]) == 0
 
 
