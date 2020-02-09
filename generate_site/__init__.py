@@ -8,7 +8,7 @@ from pathlib import Path
 import sys
 from zipfile import ZipFile
 
-# from . import supported_versions
+from . import supported_versions
 
 
 def download_data(build_id, os_name):
@@ -64,15 +64,49 @@ def normalized_data():
     return data
 
 
+# Returns one of 'latest', 'outdated', or 'unsupported'.
+# These are used as class names in the generated HTML.
+def maintenance_status(pkg_data, os_data):
+    # TODO: Actually return something besides 'latest'.
+    # 'latest', 'outdated', 'unsupported'
+    return 'latest'
+
+
+# These numbers correspond to the notes at the bottom of the website.
+def maintenance_status_note(pkg_data, os_data):
+    return {
+        'latest': '1',
+        'outdated': '2',
+        'unsupported': '3',
+    }[maintenace_status(pkg_data, os_data)]
+
+
 def build_table():
     """Generate a table of version information."""
-    table = ""
-    data = normalized_data()
-    for name in os_names():
-        print(data[name])
+    table = [
+        "<table>",
+        '  <tr class="header">',
+        '    <th>Package</th>',
+        *[f'    <th>{os}</th>' for os in os_names()],
+        '  </tr>',
+    ]
+    os_data = normalized_data()
+    for package, pkg_data in supported_versions.all().items():
+        table.append(f'  <tr id="pkg-{package}">')
+        table.append(f'    <th class="left-header"><a href="#pkg-{package}">{package}</a></th>')
+        for os_name in os_names():
+            print(data[name])
+            os_package_data = os_data[name]['results'][package]
+            version = os_package_data['version']
+            via = os_package_data['via']
+            status = maintenance_status(pkg_data, version)
+            note = maintenance_status_note(pkg_data, version)
+            table.append(f'    <td class="{status} POSSIBLY-INVALID">{version}&nbsp;<sup>{note}</sup></td>')
+        table.append(f'  </tr>')
 
-    sys.exit()
-    return table
+    table.append('</table>')
+
+    return '\n'.join(table)
 
 
 def main(argv):
