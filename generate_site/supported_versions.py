@@ -14,6 +14,9 @@ urls = {
 }
 
 
+package_names = urls.keys()
+
+
 # We memoize _get() to avoid redundant network requests.
 @memoize()
 def _get(url):

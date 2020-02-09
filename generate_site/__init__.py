@@ -64,25 +64,22 @@ def normalized_data():
     return data
 
 
-def maintenance_status(pkg_versions, version):
+def maintenance_status(package, version):
     """Returns one of 'latest', 'outdated', 'unsupported', or 'unknown'.
     These are used as class names in the generated HTML."""
 
-    print("maintenance_status({!r}, {!r})".format(pkg_data, version))
+    print("maintenance_status({!r}, {!r})".format(package, version))
 
-    if len(pkg_versions) == 0:
-        return 'unknown'
+    if supported_versions.is_latest(package, version):
+        return 'latest'
 
-    if version not in pkg_versions:
-        return 'unsupported'
-
-    if sorted(pkg_versions)[0] != version:
+    if supported_versions.outdated(package, version):
         return 'outdated'
 
-    return 'latest'
+    return 'unsupported'
 
 
-def maintenance_status_note(pkg_data, version):
+def maintenance_status_note(package, version):
     """Returns '1', '2', or '3'. These correspond to the notes at the bottom
     of the website."""
     return {
@@ -90,7 +87,7 @@ def maintenance_status_note(pkg_data, version):
         'outdated': '2',
         'unsupported': '3',
         'unknown': '4',
-    }[maintenance_status(pkg_data, version)]
+    }[maintenance_status(package, version)]
 
 
 def build_table():
@@ -103,7 +100,7 @@ def build_table():
         *['    <th>{os}</th>'.format(os_data[os]['description']) for os in os_names()],
         '  </tr>',
     ]
-    for package, pkg_data in supported_versions.all().items():
+    for package in supported_versions.package_names:
         table.append(f'  <tr id="pkg-{package}">')
         table.append(f'    <th class="left-header"><a href="#pkg-{package}">{package}</a></th>')
         for os_name in os_names():
@@ -115,8 +112,8 @@ def build_table():
                 via_note = f'(via {via})'
             else:
                 via_note = ''
-            status = maintenance_status(pkg_data, version)
-            note = maintenance_status_note(pkg_data, version)
+            status = maintenance_status(package, version)
+            note = maintenance_status_note(package, version)
             table.append(f'    <td class="{status} POSSIBLY-INVALID">{version}&nbsp;<sup>{note}</sup> {via_note}</td>')
         table.append(f'  </tr>')
 
