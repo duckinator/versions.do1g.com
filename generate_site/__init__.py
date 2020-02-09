@@ -70,6 +70,9 @@ def maintenance_status(package, version):
 
     print("maintenance_status({!r}, {!r})".format(package, version))
 
+    if supported_versions.unknown(package, version):
+        return 'unknown'
+
     if supported_versions.is_latest(package, version):
         return 'latest'
 

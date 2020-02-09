@@ -72,6 +72,10 @@ def outdated(package, version):
     return number_newer(package, version) >= 2
 
 
+def unknown(package, version):
+    return len(all()[package]) == 0
+
+
 def _loose_compare(v1, v2, fn):
     v1_parts = len(v1.split('.'))
     v2_parts = len(v2.split('.'))
