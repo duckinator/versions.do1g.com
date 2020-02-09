@@ -64,7 +64,7 @@ def normalized_data():
     return data
 
 
-def maintenance_status(_pkg_data, _os_data):
+def maintenance_status(_pkg_data, _version):
     """Returns one of 'latest', 'outdated', or 'unsupported'.
     These are used as class names in the generated HTML."""
     # TODO: Actually return something besides 'latest'.
@@ -72,14 +72,14 @@ def maintenance_status(_pkg_data, _os_data):
     return 'latest'
 
 
-def maintenance_status_note(pkg_data, os_data):
+def maintenance_status_note(pkg_data, version):
     """Returns '1', '2', or '3'. These correspond to the notes at the bottom
     of the website."""
     return {
         'latest': '1',
         'outdated': '2',
         'unsupported': '3',
-    }[maintenance_status(pkg_data, os_data)]
+    }[maintenance_status(pkg_data, version)]
 
 
 def build_table():
