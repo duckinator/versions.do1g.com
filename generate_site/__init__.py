@@ -97,7 +97,7 @@ def build_table():
         "<table>",
         '  <tr class="header">',
         '    <th>Package</th>',
-        *['    <th>{os}</th>'.format(os_data[os]['description']) for os in os_names()],
+        *['    <th>{}</th>'.format(os_data[os]['description']) for os in os_names()],
         '  </tr>',
     ]
     for package in supported_versions.package_names:
