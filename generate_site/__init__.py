@@ -64,21 +64,22 @@ def normalized_data():
     return data
 
 
-# Returns one of 'latest', 'outdated', or 'unsupported'.
-# These are used as class names in the generated HTML.
-def maintenance_status(pkg_data, os_data):
+def maintenance_status(_pkg_data, _os_data):
+    """Returns one of 'latest', 'outdated', or 'unsupported'.
+    These are used as class names in the generated HTML."""
     # TODO: Actually return something besides 'latest'.
     # 'latest', 'outdated', 'unsupported'
     return 'latest'
 
 
-# These numbers correspond to the notes at the bottom of the website.
 def maintenance_status_note(pkg_data, os_data):
+    """Returns '1', '2', or '3'. These correspond to the notes at the bottom
+    of the website."""
     return {
         'latest': '1',
         'outdated': '2',
         'unsupported': '3',
-    }[maintenace_status(pkg_data, os_data)]
+    }[maintenance_status(pkg_data, os_data)]
 
 
 def build_table():
@@ -95,13 +96,17 @@ def build_table():
         table.append(f'  <tr id="pkg-{package}">')
         table.append(f'    <th class="left-header"><a href="#pkg-{package}">{package}</a></th>')
         for os_name in os_names():
-            print(data[name])
-            os_package_data = os_data[name]['results'][package]
+            print(os_data[os_name])
+            os_package_data = os_data[os_name]['results'][package]
             version = os_package_data['version']
             via = os_package_data['via']
+            if via:
+                via_note = f'(via {via})'
+            else:
+                via_note = ''
             status = maintenance_status(pkg_data, version)
             note = maintenance_status_note(pkg_data, version)
-            table.append(f'    <td class="{status} POSSIBLY-INVALID">{version}&nbsp;<sup>{note}</sup></td>')
+            table.append(f'    <td class="{status} POSSIBLY-INVALID">{version}&nbsp;<sup>{note}</sup> {via_note}</td>')
         table.append(f'  </tr>')
 
     table.append('</table>')
