@@ -64,11 +64,12 @@ def normalized_data():
     return data
 
 
-def maintenance_status(_pkg_data, _version):
+def maintenance_status(pkg_data, version):
     """Returns one of 'latest', 'outdated', or 'unsupported'.
     These are used as class names in the generated HTML."""
     # TODO: Actually return something besides 'latest'.
     # 'latest', 'outdated', 'unsupported'
+    print("maintenance_status({}, {})".format(repr(pkg_data), repr(version)))
     return 'latest'
 
 
