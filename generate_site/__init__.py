@@ -5,6 +5,7 @@ import http.client
 import io
 import json
 from pathlib import Path
+import shutil
 import sys
 from zipfile import ZipFile
 
@@ -131,6 +132,7 @@ def main(argv):
     build_id = argv[1]
 
     Path('_site').mkdir()
+    shutil.copytree('_data/', '_site/data/')
     Path('_site/application.css').write_text(
         Path('src/application.css').read_text(),
     )
