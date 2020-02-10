@@ -68,10 +68,8 @@ def maintenance_status(package, version):
     """Returns one of 'latest', 'outdated', 'unsupported', or 'unknown'.
     These are used as class names in the generated HTML."""
 
-    print("maintenance_status({!r}, {!r})".format(package, version))
-
     if supported_versions.unknown(package, version):
-        return 'unknown'
+        raise Exception(f"don't know if {package} v{version} is supported. this shouldn't happen.")
 
     if supported_versions.is_latest(package, version):
         return 'latest'
@@ -107,7 +105,6 @@ def build_table():
         table.append(f'  <tr id="pkg-{package}">')
         table.append(f'    <th class="left-header"><a href="#pkg-{package}">{package}</a></th>')
         for os_name in os_names():
-            print(os_data[os_name])
             os_package_data = os_data[os_name]['results'][package]
             version = os_package_data['version']
             via = os_package_data['via']

@@ -66,8 +66,9 @@ freebsd_task:
   json_artifacts:
     path: "source/*.json"
 
+# TODO: Generate the site on non-master branches Just To Be Sure™.
 publish_task:
-  #only_if: $BRANCH == 'master'
+  only_if: $BRANCH == 'master'
   depends_on:
     - lint
     - archlinux_and_manjaro
@@ -86,8 +87,5 @@ publish_task:
     - npm install netlify-cli -g
   script:
     - python3 -m generate_site $CIRRUS_BUILD_ID
-    - ls _data/source/
-    - ls _site/
     - cat _site/index.html
-    #- netlify deploy --dir=_site
-    - echo awoo
+    - netlify deploy --dir=_site

@@ -45,7 +45,7 @@ def is_latest(package, version):
     Returns True if it is; False otherwise.
     """
     latest = list(reversed(sorted(all()[package])))[0]
-    print("  {} >= {}?".format(version, latest))
+    # print(f"  {package} {version} >= {latest}?")
     return loose_ge(version, latest)
 
 
