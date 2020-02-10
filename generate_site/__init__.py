@@ -12,6 +12,14 @@ from zipfile import ZipFile
 from . import supported_versions
 
 
+def os_name_key(name):
+    """A key function for sorted(). Converts e.g. "Foo Bar ASDF" to
+    [("f", 3, "foo"), ("b", 3, "bar"), ("a", 4, "asdf")], in an attempt to
+    make it put things like "Debian 9" before "Debian 10".
+    """
+    return [(part[0], len(part), part) for part in name.lower().split(' ')]
+
+
 def download_data(build_id, os_name):
     """Download relevant Cirrus CI artifacts."""
     Path('_data').mkdir(exist_ok=True)
@@ -53,7 +61,7 @@ def raw_data():
 
 def os_names():
     """Return a list of all operating system names."""
-    return sorted([data['description'] for data in raw_data()])
+    return sorted([data['description'] for data in raw_data()], key=os_name_key)
 
 
 def normalized_data():
