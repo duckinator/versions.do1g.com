@@ -152,8 +152,6 @@ def gcc():
 def python3():
     """Return supported versions of Python3."""
     versions = _get_html(urls['python3']).xpath('//div[@id="status-of-python-branches"]/table[1]//tr/td[1][starts-with(text(), "3.")]/text()')
-    # FIXME: figure out how to automate removing unreleased versions, instead
-    #        of hard-coding things.
     versions = filter(lambda x: not x == 'master', versions)
     return list(versions)
 
@@ -163,5 +161,5 @@ def ruby():
     versions = _get_html(urls['ruby']).xpath('//div[@id="content-wrapper"]/div/p[contains(text(), "maintenance")]/preceding-sibling::h3/text()')
     # FIXME: go based off which versions have a "preview" status, instead
     #        of hard-coding things.
-    versions = filter(lambda x: not x == 'Ruby 2.7', versions)
+    # versions = filter(lambda x: not x == 'Ruby 2.7', versions)
     return _normalize(versions)
