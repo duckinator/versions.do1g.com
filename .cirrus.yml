@@ -88,4 +88,4 @@ publish_task:
   script:
     - python3 -m generate_site $CIRRUS_BUILD_ID
     - cat _site/index.html
-    - netlify deploy --dir=_site
+    - netlify deploy --auth $NETLIFY_AUTH_TOKEN --site $NETLIFY_SITE_ID --dir=_site
