@@ -2,6 +2,14 @@
 # master, staging, and trying branches. (So bors can use them.)
 use_compute_credits: $CIRRUS_USER_COLLABORATOR == 'true' || $CIRRUS_BRANCH == 'master' || $CIRRUS_BRANCH == 'staging' || $CIRRUS_BRANCH == 'trying'
 
+lint_task:
+  container:
+    image: python:3-slim
+  install_script:
+    - pip3 install lxml pylint
+  script:
+    - pylint check_versions/ generate_site/
+
 archlinux_and_manjaro_task:
   container:
     matrix:
@@ -24,7 +32,6 @@ fedora_task:
 opensuse_task:
   container:
     matrix:
-      - image: opensuse/leap:15.0
       - image: opensuse/leap:15.1
   install_script: zypper install --no-confirm python3
   script: python3 -m check_versions
@@ -59,9 +66,11 @@ freebsd_task:
   json_artifacts:
     path: "source/*.json"
 
+# TODO: Generate the site on non-master branches Just To Be Sure™.
 publish_task:
   only_if: $BRANCH == 'master'
   depends_on:
+    - lint
     - archlinux_and_manjaro
     - fedora
     - opensuse
@@ -74,10 +83,9 @@ publish_task:
     NETLIFY_SITE_ID: ENCRYPTED[a408add4551cd62fe8a5a912569fda66b5e991dd1097a8eaf0a6479179a07a6ec3e5d9e0c67d16f61c67a6721a728a91]
   install_script:
     - apt-get -y update
-    - apt-get -y install python3 nodejs npm
+    - apt-get -y install python3 python3-lxml nodejs npm
     - npm install netlify-cli -g
   script:
-    #- bash -c 'for x in $(echo source/*.json); do echo ">> $x"; cat $x; echo; echo; done'
-    #- python3 -m generate_site ./source ./_site
-    #- netlify deploy --dir=_site
-    - echo awoo
+    - python3 -m generate_site $CIRRUS_BUILD_ID
+    - cat _site/index.html
+    - netlify deploy --dir=_site
