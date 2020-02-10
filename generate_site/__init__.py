@@ -140,12 +140,13 @@ def main(argv):
     build_id = argv[1]
 
     Path('_site').mkdir()
-    shutil.copytree('_data/', '_site/data/')
     Path('_site/application.css').write_text(
         Path('src/application.css').read_text(),
     )
 
     download_all(build_id)
+
+    shutil.copytree('_data/', '_site/data/')
 
     date = datetime.datetime.utcnow().strftime('%b %d, %Y at %H:%M UTC')
     table = build_table()
