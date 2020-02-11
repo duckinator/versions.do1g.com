@@ -12,6 +12,17 @@ from zipfile import ZipFile
 from . import supported_versions
 
 
+def build_index(directory):
+    urls = [str(path).split('_site', 1)[1]
+            for path in Path(directory).glob('*')]
+    links = [f'  <li><a href="{url}">{url}</a></li>' for url in urls]
+    return '\n'.join([
+        '<!doctype html>',
+        '<ul>',
+        *links,
+        '</ul>',
+    ])
+
 
 def download_data(build_id, os_name):
     """Download relevant Cirrus CI artifacts."""
@@ -147,3 +158,6 @@ def main(argv):
     Path('_site/index.html').write_text(
         template.replace('{{ date }}', date).replace('{{ table }}', table),
     )
+
+    Path('_site/data/index.html').write_text(build_index('_site/data'))
+    Path('_site/data/source/index.html').write_text(build_index('_site/data/source'))

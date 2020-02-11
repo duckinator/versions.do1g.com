@@ -17,6 +17,7 @@
 
       <p>This page provides the versions of packages that are available across different operating systems.</p>
       <p>Maintained by <a href="https://smallest.dog">@duckinator</a>. Source is <a href="https://github.com/duckinator/versions.boop.ws">available on GitHub</a>.</p>
+      <p>You can also download the <a href="/data">raw data</a>.</p>
       <p></p>
       <p>Last updated: {{ date }}</p>
 
