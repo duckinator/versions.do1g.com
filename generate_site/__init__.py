@@ -17,9 +17,11 @@ def build_index(directory):
     directory_url = str(directory).split('_site', 1)[1]
     urls = [str(path).split('_site', 1)[1]
             for path in Path(directory).glob('*')]
-    links = [f'  <li><a href="{url}">{url}</a></li>' for url in urls]
+    links = [f'<li><a href="{url}">{url}</a></li>' for url in urls]
     return '\n'.join([
         '<!doctype html>',
+        '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'
+        f'<title>Directory listing for {directory_url}</title>'
         f'<h1>Directory listing for {directory_url}</h1>'
         '<ul>',
         *links,
