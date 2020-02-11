@@ -14,11 +14,13 @@ from . import supported_versions
 
 def build_index(directory):
     """Build a basic HTML index listing all of the files in a directory."""
+    directory_url = str(directory).split('_site', 1)[1]
     urls = [str(path).split('_site', 1)[1]
             for path in Path(directory).glob('*')]
     links = [f'  <li><a href="{url}">{url}</a></li>' for url in urls]
     return '\n'.join([
         '<!doctype html>',
+        f'<h1>Directory listing for {directory_url}</h1>'
         '<ul>',
         *links,
         '</ul>',
