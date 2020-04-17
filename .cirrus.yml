@@ -45,8 +45,8 @@ debian_and_ubuntu_task:
       - image: debian:10
       - image: ubuntu:16.04
       - image: ubuntu:18.04
-      - image: ubuntu:19.04
       - image: ubuntu:19.10
+      - image: ubuntu:20.04
   install_script:
     - apt-get -y update
     - apt-get -y install python3
