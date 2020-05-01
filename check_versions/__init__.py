@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import shlex
 from subprocess import check_output
-import sys
+import platform
 
 
 def run(cmd):
@@ -21,12 +21,12 @@ def run(cmd):
 
 def is_linux():
     """Return True if the system is running Linux; False otherwise."""
-    return sys.platform == 'linux'
+    return platform.system() == 'Linux'
 
 
 def is_freebsd():
     """Return True if the system is running FreeBSD; False otherwise."""
-    return sys.platform == 'freebsd'
+    return platform.system() == 'FreeBSD'
 
 
 @memoize()
