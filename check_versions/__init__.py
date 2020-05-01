@@ -29,7 +29,7 @@ def is_freebsd():
     return sys.platform == 'freebsd'
 
 
-@memoize
+@memoize()
 def os_release():
     """Return a dict containing a normalized version of /etc/os-release."""
     lines = Path('/etc/os-release').read_text().strip().split('\n')
