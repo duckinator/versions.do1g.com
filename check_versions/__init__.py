@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import shlex
 from subprocess import check_output
-# import sys
+import sys
 
 
 def run(cmd):
@@ -19,20 +19,17 @@ def run(cmd):
     return output
 
 
-# We memoize() is_linux() to avoid running the same command repeatedly.
-@memoize()
 def is_linux():
     """Return True if the system is running Linux; False otherwise."""
-    return run('uname -s') == 'Linux'
+    return sys.platform.startswith('linux')
 
 
-# We memoize() is_freebsd() to avoid running the same command repeatedly.
-# FIXME: actually memoize() this. (avoiding changing functionality atm.)
 def is_freebsd():
     """Return True if the system is running FreeBSD; False otherwise."""
-    return run('uname -s') == 'FreeBSD'
+    return sys.platform.startswith('freebsd')
 
 
+@memoize()
 def os_release():
     """Return a dict containing a normalized version of /etc/os-release."""
     lines = Path('/etc/os-release').read_text().strip().split('\n')
