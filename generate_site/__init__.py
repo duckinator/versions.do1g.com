@@ -133,7 +133,7 @@ def build_table():
             status = maintenance_status(package, version)
             note = maintenance_status_note(package, version)
             table.append(f'    <td class="{status}">{version}&nbsp;<sup>{note}</sup> {via_note}</td>')
-        table.append(f'  </tr>')
+        table.append('  </tr>')
 
     table.append('</table>')
 
