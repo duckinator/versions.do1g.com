@@ -43,7 +43,6 @@ debian_and_ubuntu_task:
   container:
     matrix:
       - image: debian:10
-      - image: ubuntu:16.04
       - image: ubuntu:18.04
       - image: ubuntu:19.10
       - image: ubuntu:20.04
