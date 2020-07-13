@@ -42,7 +42,6 @@ opensuse_task:
 debian_and_ubuntu_task:
   container:
     matrix:
-      - image: debian:9
       - image: debian:10
       - image: ubuntu:16.04
       - image: ubuntu:18.04
