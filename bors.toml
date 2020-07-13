@@ -10,6 +10,7 @@ status = [
   "fedora container:fedora:31",
   "opensuse container:opensuse/leap:15.1",
   "opensuse container:opensuse/leap:15.2",
+  "opensuse container:opensuse/tumbleweed:latest",
   "freebsd FreeBSD:freebsd-11-3-snap",
   "freebsd FreeBSD:freebsd-12-1-snap",
   "freebsd FreeBSD:freebsd-13-0-snap",
