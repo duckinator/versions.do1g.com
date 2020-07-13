@@ -60,8 +60,6 @@ freebsd_task:
       - image_family: freebsd-11-3-snap
       - image_family: freebsd-12-1-snap
       - image_family: freebsd-13-0-snap
-  install_script:
-    - pkg update
   script: python3 -m check_versions
   json_artifacts:
     path: "source/*.json"
