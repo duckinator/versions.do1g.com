@@ -33,6 +33,7 @@ opensuse_task:
   container:
     matrix:
       - image: opensuse/leap:15.1
+      - image: opensuse/leap:15.2
   install_script: zypper install --no-confirm python3
   script: python3 -m check_versions
   json_artifacts:
