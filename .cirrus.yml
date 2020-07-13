@@ -23,7 +23,6 @@ archlinux_and_manjaro_task:
 fedora_task:
   container:
     matrix:
-      - image: fedora:30
       - image: fedora:31
       - image: fedora:32
   script: python3 -m check_versions
