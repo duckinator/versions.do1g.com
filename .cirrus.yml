@@ -25,6 +25,7 @@ fedora_task:
     matrix:
       - image: fedora:30
       - image: fedora:31
+      - image: fedora:32
   script: python3 -m check_versions
   json_artifacts:
     path: "source/*.json"
