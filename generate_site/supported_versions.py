@@ -116,7 +116,7 @@ def number_newer(package, version):
         if loose_gt(version, versions[idx]):
             return idx
 
-    # If we get here, _every_ version we know of is older.
+    # If we get here, _every_ version we know of is newer.
     return len(versions)
 
 
