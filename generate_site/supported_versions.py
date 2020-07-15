@@ -152,7 +152,7 @@ def gcc():
 def python3():
     """Return supported versions of Python3."""
     versions = _get_html(urls['python3']).xpath('//div[@id="status-of-python-branches"]/table[1]//tr/td[1][starts-with(text(), "3.")]/text()')
-    versions = filter(lambda x: not x == 'master', versions)
+    versions = filter(lambda x: x != 'master', versions)
     return list(versions)
 
 
