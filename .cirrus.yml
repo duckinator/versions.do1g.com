@@ -23,8 +23,8 @@ archlinux_and_manjaro_task:
 fedora_task:
   container:
     matrix:
-      - image: fedora:30
       - image: fedora:31
+      - image: fedora:32
   script: python3 -m check_versions
   json_artifacts:
     path: "source/*.json"
@@ -33,6 +33,8 @@ opensuse_task:
   container:
     matrix:
       - image: opensuse/leap:15.1
+      - image: opensuse/leap:15.2
+      - image: opensuse/tumbleweed:latest
   install_script: zypper install --no-confirm python3
   script: python3 -m check_versions
   json_artifacts:
@@ -41,9 +43,7 @@ opensuse_task:
 debian_and_ubuntu_task:
   container:
     matrix:
-      - image: debian:9
       - image: debian:10
-      - image: ubuntu:16.04
       - image: ubuntu:18.04
       - image: ubuntu:19.10
       - image: ubuntu:20.04
