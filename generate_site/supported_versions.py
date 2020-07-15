@@ -151,9 +151,22 @@ def gcc():
 
 def python3():
     """Return supported versions of Python3."""
-    versions = _get_html(urls['python3']).xpath('//div[@id="status-of-python-branches"]/table[1]//tr/td[1][starts-with(text(), "3.")]/text()')
-    versions = filter(lambda x: x != 'master', versions)
-    return list(versions)
+    rows = _get_html(urls['python3']).xpath('//div[@id="status-of-python-branches"]/table[1]//tr[td]')
+    versions = []
+
+    for row in rows:
+        cols = row.xpath('.//td')
+        if not cols:  # No <td> elements in this row -- probably the header.
+            continue
+        date = cols[3]
+
+        # If this is none, the 'First release' column is wrapped in an
+        # <em> tag, which means there hasn't been a stable release on that
+        # branch yet.
+        if date.text is None:
+            continue
+        versions.append(cols[0].text)
+    return versions
 
 
 def ruby():
