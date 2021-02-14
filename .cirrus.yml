@@ -23,8 +23,8 @@ archlinux_and_manjaro_task:
 fedora_task:
   container:
     matrix:
-      - image: fedora:31
       - image: fedora:32
+      - image: fedora:33
   script: python3 -m check_versions
   json_artifacts:
     path: "source/*.json"
@@ -32,8 +32,8 @@ fedora_task:
 opensuse_task:
   container:
     matrix:
-      - image: opensuse/leap:15.1
       - image: opensuse/leap:15.2
+      - image: opensuse/leap:15.3
       - image: opensuse/tumbleweed:latest
   install_script: zypper install --no-confirm python3
   script: python3 -m check_versions
@@ -45,7 +45,6 @@ debian_and_ubuntu_task:
     matrix:
       - image: debian:10
       - image: ubuntu:18.04
-      - image: ubuntu:19.10
       - image: ubuntu:20.04
   install_script:
     - apt-get -y update
@@ -57,16 +56,17 @@ debian_and_ubuntu_task:
 freebsd_task:
   freebsd_instance:
     matrix:
-      - image_family: freebsd-11-3-snap
-      - image_family: freebsd-12-1-snap
+      - image_family: freebsd-11-4
+      - image_family: freebsd-12-2
       - image_family: freebsd-13-0-snap
   script: python3 -m check_versions
   json_artifacts:
     path: "source/*.json"
 
-# TODO: Generate the site on non-master branches Just To Be Sure™.
-publish_task:
-  only_if: $BRANCH == 'master'
+success_task:
+  name: CI success
+  container:
+    image: busybox
   depends_on:
     - lint
     - archlinux_and_manjaro
@@ -74,6 +74,12 @@ publish_task:
     - opensuse
     - debian_and_ubuntu
     - freebsd
+
+# TODO: Generate the site on non-master branches Just To Be Sure™.
+publish_task:
+  only_if: $BRANCH == 'master'
+  depends_on:
+    - CI success
   container:
     image: debian:10
   env:
