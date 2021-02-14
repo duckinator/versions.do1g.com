@@ -63,9 +63,10 @@ freebsd_task:
   json_artifacts:
     path: "source/*.json"
 
-# TODO: Generate the site on non-master branches Just To Be Sure™.
-publish_task:
-  only_if: $BRANCH == 'master'
+success_task:
+  name: CI success
+  container:
+    image: busybox
   depends_on:
     - lint
     - archlinux_and_manjaro
@@ -73,6 +74,12 @@ publish_task:
     - opensuse
     - debian_and_ubuntu
     - freebsd
+
+# TODO: Generate the site on non-master branches Just To Be Sure™.
+publish_task:
+  only_if: $BRANCH == 'master'
+  depends_on:
+    - CI success
   container:
     image: debian:10
   env:
