@@ -77,7 +77,7 @@ success_task:
 
 # TODO: Generate the site on non-master branches Just To Be Sure™.
 publish_task:
-  only_if: $BRANCH == 'master'
+  only_if: $BRANCH == 'main'
   depends_on:
     - CI success
   container:
