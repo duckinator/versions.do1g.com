@@ -34,7 +34,6 @@ opensuse_task:
     matrix:
       - image: opensuse/leap:15.2
       - image: opensuse/leap:15.3
-      - image: opensuse/tumbleweed:latest
   install_script: zypper install --no-confirm python3
   script: python3 -m check_versions
   json_artifacts:
