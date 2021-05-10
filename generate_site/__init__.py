@@ -42,10 +42,10 @@ def download_data(build_id, os_name):
     conn.request("GET", uri_path)
     resp = conn.getresponse().read()
     conn.close()
-    zip_file = ZipFile(io.BytesIO(resp))
-    for member in zip_file.infolist():
-        print('> Extracting {}'.format(member.filename))
-        zip_file.extract(member, path='_data/')
+    with ZipFile(io.BytesIO(resp)) as zip_file:
+        for member in zip_file.infolist():
+            print('> Extracting {}'.format(member.filename))
+            zip_file.extract(member, path='_data/')
 
 
 def download_all(build_id):
