@@ -55,7 +55,7 @@ def supported(package, version):
     Returns True if it is; False otherwise.
     """
     versions = all()[package]
-    return any([V(version) >= V(v) for v in versions])
+    return any(V(version) >= V(v) for v in versions)
 
 
 def outdated(package, version):
