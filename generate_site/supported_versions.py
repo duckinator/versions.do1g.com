@@ -151,7 +151,7 @@ def gcc():
 
 def python3():
     """Return supported versions of Python3."""
-    rows = _get_html(urls['python3']).xpath('//div[@id="status-of-python-branches"]/table[1]//tr[td]')
+    rows = _get_html(urls['python3']).xpath('//div[@id="status-of-python-branches"]//table[1]//tr[td]')
     versions = []
 
     for row in rows:
@@ -163,9 +163,9 @@ def python3():
         # If this is none, the 'First release' column is wrapped in an
         # <em> tag, which means there hasn't been a stable release on that
         # branch yet.
-        if date.text is None:
+        if date.text_content() is None:
             continue
-        versions.append(cols[0].text)
+        versions.append(cols[0].text_content())
     return versions
 
 
