@@ -34,9 +34,9 @@ def os_release():
     """Return a dict containing a normalized version of /etc/os-release."""
     lines = Path('/etc/os-release').read_text().strip().split('\n')
     os_info = dict([x.split('=', 1) for x in lines])
-    for k in os_info.keys():
-        if os_info[k].startswith('"') and os_info[k].endswith('"'):
-            os_info[k] = os_info[k][1:-1]
+    for key, val in os_info.items():
+        if val.startswith('"') and val.endswith('"'):
+            os_info[key] = val[1:-1]
     return os_info
 
 

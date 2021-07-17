@@ -20,7 +20,8 @@ package_names = urls.keys()
 # We memoize _get() to avoid redundant network requests.
 @memoize()
 def _get(url):
-    return urlopen(url).read().decode()
+    with urlopen(url) as f:
+        return f.read().decode()
 
 
 def _get_html(url):
