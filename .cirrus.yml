@@ -62,7 +62,7 @@ freebsd_task:
   json_artifacts:
     path: "source/*.json"
 
-success_task:
+task:
   name: CI success
   container:
     image: busybox
