@@ -30,6 +30,8 @@ disable=invalid-name,
         missing-module-docstring,
         compare-to-zero,
         consider-using-enumerate, # TODO: Remove this one once it's dealt with.
+        consider-using-f-string,
+        unspecified-encoding,
 #        missing-docstring,
 #        bad-whitespace,
 #        bad-continuation,

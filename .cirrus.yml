@@ -23,8 +23,8 @@ archlinux_and_manjaro_task:
 fedora_task:
   container:
     matrix:
-      - image: fedora:32
-      - image: fedora:33
+      - image: fedora:34
+      - image: fedora:35
   script: python3 -m check_versions
   json_artifacts:
     path: "source/*.json"
@@ -32,7 +32,6 @@ fedora_task:
 opensuse_task:
   container:
     matrix:
-      - image: opensuse/leap:15.2
       - image: opensuse/leap:15.3
   install_script: zypper install --no-confirm python3
   script: python3 -m check_versions
@@ -43,6 +42,7 @@ debian_and_ubuntu_task:
   container:
     matrix:
       - image: debian:10
+      - image: debian:11
       - image: ubuntu:18.04
       - image: ubuntu:20.04
   install_script:
@@ -55,9 +55,8 @@ debian_and_ubuntu_task:
 freebsd_task:
   freebsd_instance:
     matrix:
-      - image_family: freebsd-11-4
       - image_family: freebsd-12-2
-      - image_family: freebsd-13-0-snap
+      - image_family: freebsd-13-0
   script: python3 -m check_versions
   json_artifacts:
     path: "source/*.json"
