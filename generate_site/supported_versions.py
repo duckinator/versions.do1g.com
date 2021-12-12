@@ -152,7 +152,7 @@ def gcc():
 
 def python3():
     """Return supported versions of Python3."""
-    rows = _get_html(urls['python3']).xpath('//div[@id="status-of-python-branches"]//table[1]//tr[td]')
+    rows = _get_html(urls['python3']).xpath('//*[@id="status-of-python-branches"]//table[1]//tr[td]')
     versions = []
 
     for row in rows:
