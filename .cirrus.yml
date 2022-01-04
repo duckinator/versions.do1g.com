@@ -114,11 +114,11 @@ task:
   name: CI success
   container: {image: busybox}
   depends_on:
-    - publish_task
+    - publish
 
 task:
   only_if: $BRANCH != 'main'
   name: CI success
   container: {image: busybox}
   depends_on:
-    - fake_publish_task
+    - fake_publish
