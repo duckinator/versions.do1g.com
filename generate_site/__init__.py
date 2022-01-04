@@ -102,9 +102,9 @@ def maintenance_status_note(package, version):
     """Returns '1', '2', or '3'. These correspond to the notes at the bottom
     of the website."""
     return {
-        'latest': '1',
-        'outdated': '2',
-        'unsupported': '3',
+        'latest': '*',
+        'outdated': '&dagger;',
+        'unsupported': '&ddagger;',
         'unknown': '4',
     }[maintenance_status(package, version)]
 
