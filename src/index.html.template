@@ -25,9 +25,9 @@
 
 
       <p></p>
-      <p><sup>[1]</sup> This version is still supported by the developers.</p>
-      <p><sup>[2]</sup> This version is still supported by the developers, but there are newer releases.</p>
-      <p><sup>[3]</sup> This version is no longer supported by the developers.</p>
+      <p>* This version is still supported by the developers.</p>
+      <p>&dagger; This version is still supported by the developers, but there are newer releases.</p>
+      <p>&ddagger; This version is no longer supported by the developers.</p>
     </main>
   </body>
 </html>
