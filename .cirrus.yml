@@ -110,9 +110,15 @@ fake_publish_task:
     - stat _site/index.html
 
 task:
+  only_if: $BRANCH == 'main'
   name: CI success
-  container:
-    image: busybox
+  container: {image: busybox}
   depends_on:
     - publish_task
+
+task:
+  only_if: $BRANCH != 'main'
+  name: CI success
+  container: {image: busybox}
+  depends_on:
     - fake_publish_task
