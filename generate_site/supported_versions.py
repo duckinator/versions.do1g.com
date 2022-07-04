@@ -140,7 +140,7 @@ def all():
 
 def clang():
     """Return supported versions of Clang."""
-    versions = _get_html(urls['clang']).xpath('//a[starts-with(@href, "https://releases.llvm.org/download.html#")]/b/text()')
+    versions = _get_html(urls['clang']).xpath('//a[starts-with(@href, "https://github.com/llvm/llvm-project/releases/tag/")]/b/text()')
     return _normalize(versions)
 
 
