@@ -142,9 +142,9 @@ def clang():
     """Return supported versions of Clang."""
     # If the exception in this function is raised, it probably means the link on https://llvm.org was changed.
     # Start by: Going to https://llvm.org , scroll down to "Download now:", and investigating the URL for a specific LLVM version.
-    versions = _get_html(urls['clang']).xpath('//a[starts-with(@href, "https://github.com/llvm/llvm-project/releases/tag/")]/b/text()')
+    versions = _get_html(urls['clang']).xpath('//a[starts-with(@href, "https://releases.llvm.org/")]/b/text()')
     if len(versions) == 0:
-        raise Exception("clang() returned an empty list, so it's impossible to determine what versions are supported. See comment in supported_versions.clang() for how to resolve..")
+        raise Exception("clang() returned an empty list. See comment in supported_versions.clang() for how to resolve.")
     return _normalize(versions)
 
 
