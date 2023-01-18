@@ -79,13 +79,13 @@ publish_task:
   depends_on:
     - site gen success
   container:
-    image: debian:11
+    image: node:18-bullseye
   env:
     NETLIFY_AUTH_TOKEN: ENCRYPTED[ec6da05d365917ed543e307555cbd9c618bbd41db7dee828daf7b01825adef48f547db89ead63b99418fe07a9d41b43a]
     NETLIFY_SITE_ID: ENCRYPTED[a408add4551cd62fe8a5a912569fda66b5e991dd1097a8eaf0a6479179a07a6ec3e5d9e0c67d16f61c67a6721a728a91]
   install_script:
     - apt-get -y update
-    - apt-get -y install python3 python3-lxml nodejs npm
+    - apt-get -y install python3 python3-lxml
     # https://github.com/netlify/cli/issues/1870
     - npm install --unsafe-perm=true -g netlify-cli
   script:
@@ -99,10 +99,10 @@ fake_publish_task:
   depends_on:
     - site gen success
   container:
-    image: debian:11
+    image: node:18-bullseye
   install_script:
     - apt-get -y update
-    - apt-get -y install python3 python3-lxml nodejs npm
+    - apt-get -y install python3 python3-lxml
     # https://github.com/netlify/cli/issues/1870
     - npm install --unsafe-perm=true -g netlify-cli
   script:
