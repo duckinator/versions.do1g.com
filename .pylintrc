@@ -32,6 +32,7 @@ disable=invalid-name,
         consider-using-enumerate, # TODO: Remove this one once it's dealt with.
         consider-using-f-string,
         unspecified-encoding,
+        broad-exception-raised, # TODO: Remove this one once it's dealt with.
 #        missing-docstring,
 #        bad-whitespace,
 #        bad-continuation,
