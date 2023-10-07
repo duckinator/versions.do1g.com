@@ -31,3 +31,4 @@ venv/
 # Project-specific ignores
 _data/
 _site/
+source/
