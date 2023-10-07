@@ -153,7 +153,10 @@ def main(argv):
         Path('src/application.css').read_text(),
     )
 
-    download_all(build_id)
+    if build_id.lower() == 'local':
+        shutil.copytree('source/', '_data/source/')
+    else:
+        download_all(build_id)
 
     shutil.copytree('_data/', '_site/data/')
 
