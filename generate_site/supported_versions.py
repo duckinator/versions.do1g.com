@@ -163,14 +163,12 @@ def python3():
         cols = row.xpath('.//td')
         if not cols:  # No <td> elements in this row -- probably the header.
             continue
-        date = cols[3]
+        text = cols[0].text_content()
 
-        # If this is none, the 'First release' column is wrapped in an
-        # <em> tag, which means there hasn't been a stable release on that
-        # branch yet.
-        if date.text_content() is None:
+        # If the branch is "main", don't track it.
+        if text == 'main':
             continue
-        versions.append(cols[0].text_content())
+        versions.append(text)
     return versions
 
 
