@@ -92,7 +92,7 @@ def maintenance_status(package, version):
     if supported_versions.is_latest(package, version):
         return 'latest'
 
-    if supported_versions.outdated(package, version):
+    if supported_versions.supported(package, version):
         return 'outdated'
 
     return 'unsupported'
