@@ -82,6 +82,10 @@ def unknown(package, _version):
 
 
 def _loose_compare(v1, v2, fn):
+    # Given e.g. "3.0~exp1", return "3.0".
+    # (As of Nov 7 2023, Ruby on Ubuntu 22.04 is version "3.0~exp1".)
+    v1 = v1.split('~')[0]
+    v2 = v2.split('~')[0]
     v1_parts = len(v1.split('.'))
     v2_parts = len(v2.split('.'))
     parts_to_keep = min(v1_parts, v2_parts)
