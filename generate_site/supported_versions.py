@@ -3,7 +3,7 @@
 from functools import lru_cache as memoize
 from urllib.request import urlopen
 from lxml import html
-from pkg_resources import parse_version as V
+from pkg_resources import parse_version
 
 
 urls = {
@@ -15,6 +15,12 @@ urls = {
 
 
 package_names = urls.keys()
+
+
+def V(version):
+    # Given e.g. "3.0~exp1", take "3.0".
+    version = version.split('~')[0]
+    return parse_version(version)
 
 
 # We memoize _get() to avoid redundant network requests.
@@ -59,20 +65,6 @@ def supported(package, version):
     return any(V(version) >= V(v) for v in versions)
 
 
-def outdated(package, version):
-    """Determine if version +version+ of +package+ is supported but not latest.
-
-    Returns True if it is; False otherwise.
-    """
-    # versions = all()[package]
-
-    # Ignore anything with only 1 version available.
-    # if len(versions) == 1:
-    #     return False
-
-    return number_newer(package, version) >= 2
-
-
 def unknown(package, _version):
     """Determine if it is unknown whether +_version+ of +package+ is supported.
 
@@ -82,10 +74,6 @@ def unknown(package, _version):
 
 
 def _loose_compare(v1, v2, fn):
-    # Given e.g. "3.0~exp1", return "3.0".
-    # (As of Nov 7 2023, Ruby on Ubuntu 22.04 is version "3.0~exp1".)
-    v1 = v1.split('~')[0]
-    v2 = v2.split('~')[0]
     v1_parts = len(v1.split('.'))
     v2_parts = len(v2.split('.'))
     parts_to_keep = min(v1_parts, v2_parts)
@@ -99,37 +87,9 @@ def loose_ge(v1, v2):
     return _loose_compare(v1, v2, lambda a, b: a >= b)
 
 
-def loose_eq(v1, v2):
-    """TODO: Figure out wtf this does, again."""
-    return _loose_compare(v1, v2, lambda a, b: a == b)
-
-
 def loose_gt(v1, v2):
     """TODO: Figure out wtf this does, again."""
     return _loose_compare(v1, v2, lambda a, b: a > b)
-
-
-def loose_lt(v1, v2):
-    """TODO: Figure out wtf this does, again."""
-    return _loose_compare(v1, v2, lambda a, b: a < b)
-
-
-def number_newer(package, version):
-    """Return number of versions of `package` which are newer than `version`."""
-    versions = list(reversed(sorted(all()[package])))
-    for idx in range(0, len(versions)):
-        if loose_gt(version, versions[idx]):
-            return idx
-
-    # If we get here, _every_ version we know of is newer.
-    return len(versions)
-
-
-def percent_newer(package, version):
-    """Return percentage of `package` versions which are newer than `version`."""
-    num_newer = number_newer(package, version)
-    num_versions = len(all()[package])
-    return int(float(num_newer) / num_versions * 100)
 
 
 def all():
@@ -179,7 +139,4 @@ def python3():
 def ruby():
     """Return supported versions of Ruby."""
     versions = _get_html(urls['ruby']).xpath('//div[@id="content-wrapper"]/div/p[contains(text(), "maintenance")]/preceding-sibling::h3/text()')
-    # FIXME: go based off which versions have a "preview" status, instead
-    #        of hard-coding things.
-    # versions = filter(lambda x: not x == 'Ruby 2.7', versions)
     return _normalize(versions)
