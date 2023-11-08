@@ -18,6 +18,7 @@ package_names = urls.keys()
 
 
 def V(version):
+    """Parse +version+ and return a +packaging.versions.Version+."""
     # Given e.g. "3.0~exp1", take "3.0".
     version = version.split('~')[0]
     return parse_version(version)
