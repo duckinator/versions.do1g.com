@@ -163,9 +163,10 @@ def main(argv):
     date = datetime.datetime.utcnow().strftime('%b %d, %Y at %H:%M UTC')
     table = build_table()
     template = Path('src/index.html.template').read_text()
-    Path('_site/index.html').write_text(
-        template.replace('{{ date }}', date).replace('{{ table }}', table),
-    )
+    text = template.replace('{{ date }}', date).replace('{{ table }}', table)
+    for (package, url) in supported_versions.urls.items():
+        text = text.replace('{{ ' + package + ' }}', url)
+    Path('_site/index.html').write_text(text)
 
     Path('_site/data/index.html').write_text(build_index('_site/data'))
     Path('_site/data/source/index.html').write_text(build_index('_site/data/source'))

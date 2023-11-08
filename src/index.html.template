@@ -28,6 +28,15 @@
       <p>* This version is still supported by the developers.</p>
       <p>&dagger; This version is still supported by the developers, but there are newer releases.</p>
       <p>&ddagger; This version is no longer supported by the developers.</p>
+
+      <h2>Sources</h2>
+
+      Details on what versions are supported can be found on these pages:
+      <ul>
+        <li><a href="{{ clang }}">Clang version information (they don't explicitly state what's supported, so I assume "latest major version only")</a></li>
+        <li><a href="{{ gcc }}">GCC version information</a></li>
+        <li><a href="{{ python3 }}">Python version information</a></li>
+        <li><a href="{{ ruby }}">Ruby version information</a></li>
     </main>
   </body>
 </html>
