@@ -7,9 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ID=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- inline favicon to avoid unneeded network request -->
-    <!-- (not specifying it at all will make a network request, too.) -->
-    <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAA7SURBVDhPY9h45hxJiM4aGBiw6EcTpLMGEB9NGsMI+msAIrgiTNVANCAagAioFKtqIMIuigfRWsOZcwC3+B1D96dGPAAAAABJRU5ErkJggg==">
+    <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAAAiSURBVDhPY9x45tx/BgoAE5QmG4waMGoACIwaMPAGMDAAAJnEA2q0K0TgAAAAAElFTkSuQmCC">
 
     <style>
 html {
