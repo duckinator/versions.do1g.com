@@ -149,9 +149,6 @@ def main(argv):
     build_id = argv[1]
 
     Path('_site').mkdir()
-    Path('_site/application.css').write_text(
-        Path('src/application.css').read_text(),
-    )
 
     if build_id.lower() == 'local':
         shutil.copytree('source/', '_data/source/')
