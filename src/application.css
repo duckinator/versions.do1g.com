@@ -1,13 +1,8 @@
-/* vim: set fs=css */
-
 html {
   box-sizing: border-box;
-  text-rendering: optimizeLegibility;
   font-family: sans-serif;
 }
-*, *:before, *:after {
-  box-sizing: inherit;
-}
+*, *:before, *:after { box-sizing: inherit; }
 
 body {
   font-family: Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -36,56 +31,25 @@ table {
   margin-left: -1em;
 }
 
-tr:nth-child(even) {
-  background-color: rgba(0, 0, 0, 0.125);
-}
+tr:nth-child(even) { background-color: rgba(0, 0, 0, 0.125); }
 
-tr.header {
-  background: transparent;
-}
+tr.header th:first-child, th.left-header { text-align: left; }
+td { text-align: center; }
 
-tr.header th:first-child, th.left-header {
-  text-align: left;
-}
-
-td {
-  text-align: center;
-}
-
-th.left-header, td {
-  padding: 1em 2em;
+th, td {
+  padding: 1em;
   min-width: 15ch;
 }
 
-th.left-header, th {
-  padding-left: 1em;
-}
+[id^=pkg-]:target { background-color: #28a6af; }
 
-[id^=pkg-]:target {
-  background-color: #28a6af;
-}
-
-.unsupported {
-  background-color: #e35966;
-}
-
+.unsupported { background-color: #e35966; }
 /* basically manually applying rgba(0, 0, 0, 0.125) overlay. */
-tr:nth-child(even) .unsupported {
-  background-color: #c74e59;
-}
+tr:nth-child(even) .unsupported { background-color: #c74e59; }
 
-.outdated {
-  background-color: #be7c4d;
-}
-
+.outdated { background-color: #be7c4d; }
 /* basically manually applying rgba(0, 0, 0, 0.125) overlay. */
-tr:nth-child(even) .outdated {
-  background-color: #a66d43;
-}
+tr:nth-child(even) .outdated { background-color: #a66d43; }
 
-.latest {
-  background-color: #3ab795;
-}
-tr:nth-child(even) .latest {
-  background-color: #33a082;
-}
+.latest { background-color: #3ab795; }
+tr:nth-child(even) .latest { background-color: #33a082; }
