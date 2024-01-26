@@ -48,9 +48,6 @@ def get_info():
         os_info[os_name] = module.get_info(image, packages)
     return os_info
 
-def copy(src, dest):
-    return dest.write_text(src.read_text())
-
 def main():
     os_info = get_info()
 
@@ -62,8 +59,6 @@ def main():
 
     src = Path(__file__).resolve().parent
     site = src.parent / '_site'
-
-    copy(src / 'application.css', site / 'application.css')
 
     template = src / 'index.html.template'
     output = site / 'index.html'
