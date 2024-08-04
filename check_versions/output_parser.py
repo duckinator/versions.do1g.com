@@ -1,3 +1,6 @@
+import subprocess
+import xml.etree.ElementTree as ET
+
 from .linux_common import common_parse_info
 
 class Distro:
@@ -27,6 +30,10 @@ class Fedora(Distro):
 class OpenSUSE(Distro):
     OUTPUT_FORMAT = 'zypper'
     def info_command(self, packages):
+        if 'python3' in packages:
+            wp_python3_xml = subprocess.check_output(["zypper", "--xmlout", "what-provides", "python3"])
+            wp_python3 = ET.fromstring(wp_python3_xml).find('./search-result/solvable-list/solvable').attrib['name']
+            packages[packages.index('python3')] = wp_python3
         return 'zypper --xmlout info {}'.format(' '.join(packages))
 
 class FreeBSD(Distro):
