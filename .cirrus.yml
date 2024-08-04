@@ -24,14 +24,15 @@ fedora_task:
   json_artifacts:
     path: "source/*.json"
 
-#opensuse_task:
-#  container:
-#    matrix:
-#      - image: opensuse/leap:15.6
-#  install_script: zypper install --no-confirm python3
-#  script: python3 -m check_versions
-#  json_artifacts:
-#    path: "source/*.json"
+opensuse_task:
+  container:
+    matrix:
+      - image: opensuse/leap:latest
+      - image: opensuse/tumbleweed:latest
+  install_script: zypper install --no-confirm python3
+  script: python3 -m check_versions
+  json_artifacts:
+    path: "source/*.json"
 
 debian_and_ubuntu_task:
   container:
@@ -63,7 +64,7 @@ task:
     - lint
     - archlinux_and_manjaro
     - fedora
-    #- opensuse
+    - opensuse
     - debian_and_ubuntu
     - freebsd
 
