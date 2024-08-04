@@ -183,7 +183,6 @@ class FreeBSD(Distro):
                     'version': version,
                     'via': pkg,
                 }
-                #info['clang'] = '{}:via={}'.format(version, pkg)
 
         return info
 
