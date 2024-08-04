@@ -1,7 +1,7 @@
 import subprocess
 import xml.etree.ElementTree as ET
 
-from .linux_common import common_parse_info
+from .linux_common import common_parse_info, parse_chunks
 
 class Distro:
     OUTPUT_FORMAT = 'common'
@@ -28,13 +28,20 @@ class Fedora(Distro):
         return 'dnf info --color=false {}'.format(' '.join(packages))
 
 class OpenSUSE(Distro):
-    OUTPUT_FORMAT = 'zypper'
     def info_command(self, packages):
         if 'python3' in packages:
             wp_python3_xml = subprocess.check_output(["zypper", "--xmlout", "what-provides", "python3"])
             wp_python3 = ET.fromstring(wp_python3_xml).find('./search-result/solvable-list/solvable').attrib['name']
             packages[packages.index('python3')] = wp_python3
         return 'zypper --xmlout info {}'.format(' '.join(packages))
+
+    def parse_info(self, output):
+        root = ET.fromstring(output)
+        messages = root.findall("./message[@type='info']")
+        messages = [msg.text for msg in messages]
+        messages = list(filter(lambda msg: ':' in msg, messages))
+        return parse_chunks(messages)
+
 
 class FreeBSD(Distro):
     def info_command(self, packages):
