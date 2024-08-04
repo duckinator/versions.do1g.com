@@ -1,10 +1,10 @@
 lint_task:
+  environment:
+    CIRRUS_SHELL: direct
   container:
-    image: python:3-slim
-  install_script:
-    - pip3 install ruff
+    image: ghcr.io/astral-sh/ruff
   script:
-    - ruff check
+    - /ruff check
 
 check_versions_task:
   matrix:
