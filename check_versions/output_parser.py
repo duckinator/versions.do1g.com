@@ -38,8 +38,7 @@ class FreeBSD(Distro):
 
         return 'sudo pkg rquery "%n %v %dn=%dv" {}'.format(' '.join(packages))
 
-
-    def parse_info(output):
+    def parse_info(self, output):
         info = {}
 
         output = output.strip()
