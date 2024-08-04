@@ -15,6 +15,7 @@ def parse_info(output):
         if dep.startswith(pkg):
             realpkg, version = dep.split('=')
         version = version.split('_')[0]
+        version = version.split(',')[0]
         info[pkg] = {
             'version': version,
             'via': None,
