@@ -39,8 +39,7 @@ debian_and_ubuntu_task:
     matrix:
       - image: debian:oldstable-slim
       - image: debian:stable-slim
-      - image: ubuntu:22.04
-      - image: ubuntu:24.04
+      - image: ubuntu:latest # Most recent LTS - see https://hub.docker.com/_/ubuntu
   install_script:
     - apt-get -y update
     - apt-get -y install python3
