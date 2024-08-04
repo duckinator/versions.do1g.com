@@ -1,4 +1,10 @@
-# It seems Fedora 35 changed the value of NAME in /etc/os-release.
-# That results in this file getting imported by check_versions.main(),
-# instead of fedora.py.
-from .fedora import info_command, parse_info
+from .linux_common import common_parse_info
+
+
+def info_command(packages):
+    packages = list(map(lambda x: x + '.x86_64', packages))
+    return 'dnf info --color=false {}'.format(' '.join(packages))
+
+
+def parse_info(output):
+    return common_parse_info('dnf', output)
