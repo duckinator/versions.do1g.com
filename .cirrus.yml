@@ -6,51 +6,31 @@ lint_task:
   script:
     - ruff check
 
-archlinux_and_manjaro_task:
-  container:
-    matrix:
-      - image: archlinux:latest
-      - image: manjarolinux/base:latest
-  install_script: pacman -Sy --noconfirm python3
-  script: python3 ./check_versions.py
-  json_artifacts:
-    path: "source/*.json"
+check_versions_task:
+  matrix:
+    - freebsd_instance: {image_family: freebsd-14-0}
+    - container: {image: fedora:latest}
+    - container:
+        matrix:
+          - image: archlinux:latest
+          - image: manjarolinux/base:latest
+      install_script: pacman -Sy --noconfirm python3
 
-fedora_task:
-  container:
-    matrix:
-      - image: fedora:latest
-  script: python3 ./check_versions.py
-  json_artifacts:
-    path: "source/*.json"
+    - container:
+        matrix:
+          - image: debian:oldstable-slim
+          - image: debian:stable-slim
+          - image: ubuntu:latest
+      install_script:
+        - apt-get -y update
+        - apt-get -y install python3
 
-opensuse_task:
-  container:
-    matrix:
-      - image: opensuse/leap:latest
-      - image: opensuse/tumbleweed:latest
-  install_script: zypper install --no-confirm python3
-  script: python3 ./check_versions.py
-  json_artifacts:
-    path: "source/*.json"
+    - container:
+        matrix:
+          - image: opensuse/leap:latest
+          - image: opensuse/tumbleweed:latest
+      install_script: zypper install --no-confirm python3
 
-debian_and_ubuntu_task:
-  container:
-    matrix:
-      - image: debian:oldstable-slim
-      - image: debian:stable-slim
-      - image: ubuntu:latest # Most recent LTS - see https://hub.docker.com/_/ubuntu
-  install_script:
-    - apt-get -y update
-    - apt-get -y install python3
-  script: python3 ./check_versions.py
-  json_artifacts:
-    path: "source/*.json"
-
-freebsd_task:
-  freebsd_instance:
-    matrix:
-      - image_family: freebsd-14-0
   script: python3 ./check_versions.py
   json_artifacts:
     path: "source/*.json"
@@ -61,11 +41,7 @@ task:
     image: busybox
   depends_on:
     - lint
-    - archlinux_and_manjaro
-    - fedora
-    - opensuse
-    - debian_and_ubuntu
-    - freebsd
+    - check_versions
 
 render_task:
   depends_on:
