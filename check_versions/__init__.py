@@ -1,6 +1,5 @@
 """Check the available versions of various packages on the current system."""
 
-from functools import lru_cache as memoize
 from importlib import import_module
 import json
 from pathlib import Path
@@ -19,60 +18,21 @@ def run(cmd):
     return output
 
 
-def is_linux():
-    """Return True if the system is running Linux; False otherwise."""
-    return sys.platform.startswith('linux')
-
-
-def is_freebsd():
-    """Return True if the system is running FreeBSD; False otherwise."""
-    return sys.platform.startswith('freebsd')
-
-
-@memoize()
-def os_release():
-    """Return a dict containing a normalized version of /etc/os-release."""
-    lines = Path('/etc/os-release').read_text().strip().split('\n')
-    os_info = dict([x.split('=', 1) for x in lines])
-    for key, val in os_info.items():
-        if val.startswith('"') and val.endswith('"'):
-            os_info[key] = val[1:-1]
-    return os_info
-
-
 def main(_argv):
     """Entrypoint for the script."""
     packages = ['python3', 'ruby', 'clang', 'gcc']
 
     # Detect the operating system name/description.
-    if (is_linux() and
-            Path('/etc/arch-release').exists() and
-            not Path('/etc/arch-release').read_text()):
-        # If /etc/arch-release exists and is empty, it's probably ArchLinux.
-        # If /etc/arch-release exists and isn't empty, it's probably
-        # Manjaro -- which gets handled using the normal os_release() approach.
-        # If another Arch-based system without /etc/os-release is found,
-        # we'll need to revisit this.
-        #
-        # TODO: See if there's an Arch package that provides /etc/os-release
-        #       so we can remove this obnoxious special case.
-        os_name = 'ArchLinux'
-        os_desc = os_name
-    elif is_linux():
-        os_name = os_release()['NAME']
-
-        # Keeping name length reasonable is more important than GNU's ego.
-        os_name = os_name.replace(' GNU/Linux', '')
-
-        os_version = os_release().get('VERSION_ID', '')
-
-        if os_version:
-            os_desc = '{} {}'.format(os_name, os_version)
-        else:
-            os_desc = os_name
-    elif is_freebsd():
+    if sys.platform.startswith('freebsd'):
         os_name = 'FreeBSD'
         os_desc = run('uname -sr')
+    else: # Assume everything else is Linux.
+        # Treat /etc/os-release as a key/value pair of strings,
+        # with optional quotes on the value side.
+        os_release = {k: v[1:-1] if v[0] == '"' else v for (k, v) in [line.split("=") for line in Path("/etc/os-release").read_text().splitlines()]}
+        os_name = os_release['NAME'].replace(' GNU/Linux', '')
+        os_version = os_release.get('VERSION_ID', '')
+        os_desc = '{} {}'.format(os_name, os_version).strip()
 
     os_id = os_name.lower().replace(' ', '_')
     os_filename_id = os_desc.lower().replace(' ', '_')
