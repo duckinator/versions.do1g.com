@@ -111,6 +111,7 @@ def maintenance_status_note(package, version):
 
 def build_table():
     """Generate a table of version information."""
+    print("Building table...")
     os_data = normalized_data()
     table = [
         "<table>",
@@ -123,6 +124,7 @@ def build_table():
         table.append(f'  <tr id="pkg-{package}">')
         table.append(f'    <th class="left-header"><a href="#pkg-{package}">{package}</a></th>')
         for os_name in os_names():
+            print(f'  {os_name} / {package}')
             os_package_data = os_data[os_name]['results'][package]
             version = os_package_data['version']
             via = os_package_data['via']
