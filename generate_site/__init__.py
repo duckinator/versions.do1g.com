@@ -29,12 +29,12 @@ def build_index(directory):
     ])
 
 
-def download_data(build_id, os_name):
+def download_data(build_id, task_name = 'check_versions'):
     """Download relevant Cirrus CI artifacts."""
     Path('_data').mkdir(exist_ok=True)
 
     uri_domain = 'https://api.cirrus-ci.com'
-    uri_path = '/v1/artifact/build/{}/{}/json.zip'.format(build_id, os_name)
+    uri_path = '/v1/artifact/build/{}/{}/json.zip'.format(build_id, task_name)
 
     print('Downloading {}{}...'.format(uri_domain, uri_path))
 
@@ -46,20 +46,6 @@ def download_data(build_id, os_name):
         for member in zip_file.infolist():
             print('> Extracting {}'.format(member.filename))
             zip_file.extract(member, path='_data/')
-
-
-def download_all(build_id):
-    """Download Cirrus CI artifacts for all supported operating systems."""
-    os_name_list = [
-        'archlinux_and_manjaro',
-        'fedora',
-        'opensuse',
-        'debian_and_ubuntu',
-        'freebsd',
-    ]
-
-    for os_name in os_name_list:
-        download_data(build_id, os_name)
 
 
 def raw_data():
@@ -155,7 +141,7 @@ def main(argv):
     if build_id.lower() == 'local':
         shutil.copytree('source/', '_data/source/')
     else:
-        download_all(build_id)
+        download_data(build_id)
 
     shutil.copytree('_data/', '_site/data/')
 
