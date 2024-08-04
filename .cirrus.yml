@@ -2,8 +2,9 @@ lint_task:
   container:
     image: python:3-slim
   install_script:
-    - pip3 install lxml pylint
+    - pip3 install ruff
   script:
+    - ruff check
     - pylint check_versions/ generate_site/
 
 archlinux_and_manjaro_task:
