@@ -1,12 +1,11 @@
 from .linux_common import common_parse_info
 
 class Distro:
-    OUTPUT_FORMAT = None
+    OUTPUT_FORMAT = 'common'
     def parse_info(self, output):
         return common_parse_info(self.OUTPUT_FORMAT, output)
 
 class ArchLinux(Distro):
-    OUTPUT_FORMAT = 'apt'
     def info_command(self, packages):
         # ArchLinux calls their python 3.x package 'python', not 'python3'.
         # Unlike basically everything else I've ever encountered.
