@@ -171,7 +171,7 @@ class FreeBSD(Distro):
             pkg, version, dep = line.split(' ')
             if dep.startswith(pkg):
                 realpkg, version = dep.split('=')
-            version = version.split('_')[0]
+            version = self._normalize_version(version.split('_')[0])
             info[pkg] = {
                 'version': version,
                 'via': None,
