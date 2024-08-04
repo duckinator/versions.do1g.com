@@ -26,6 +26,7 @@ def parse_chunk(chunk):
 
 
 def parse_common(output):
+    output = output.replace("\r", "")
     chunks = output.strip().split("\n\n")
 
     package_info = {}
@@ -62,20 +63,6 @@ def _parse_dnf(output):
     return parse_common(output)
 
 
-# raw `pacman -Syi <packages>` output => {'pkg1': 'ver1', 'pkg2': 'ver2'}
-def _parse_pacman(output):
-    # Remove \r, collapse line continuations.
-    output = output.replace("\r", "").replace("\n                  ", ' ')
-
-    # Remove ":: <...>" and "downloading <repo name>..." lines.
-    def valid(x):
-        return not x.startswith(":: ") and not x.startswith("downloading ")
-
-    output = "\n".join(filter(valid, output.split("\n")))
-
-    return parse_common(output)
-
-
 # raw `zypper info <packages>` output => {'pkg1': 'ver1', 'pkg2': 'ver2'}
 def _parse_zypper(output):
     # Remove \r, collapse line continuations.
@@ -93,8 +80,8 @@ def _parse_zypper(output):
 
 def common_parse_info(pkgman, output):
     return {
+        'common': parse_common,
         'apt': _parse_apt,
         'dnf': _parse_dnf,
-        'pacman': _parse_pacman,
         'zypper': _parse_zypper,
     }[pkgman](output)
