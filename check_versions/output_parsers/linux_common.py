@@ -16,7 +16,7 @@ def parse_chunk(chunk):
 
     chunk_info = {}
     for line in lines:
-        if not ':' in line:
+        if ':' not in line:
             continue
         parts = line.split(':', 1)
         name = parts[0].strip()
