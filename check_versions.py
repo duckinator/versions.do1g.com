@@ -204,13 +204,17 @@ def discover():
     if sys.platform.startswith('freebsd'):
         os_name = 'FreeBSD'
         os_desc = run('uname -sr')
-    else: # Assume everything else is Linux.
+
+    elif sys.platform == "linux":
         # Treat /etc/os-release as a key/value pair of strings,
         # with optional quotes on the value side.
         os_release = {k: v[1:-1] if v[0] == '"' else v for (k, v) in [line.split("=") for line in Path("/etc/os-release").read_text().splitlines() if not line.startswith("#")]}
         os_name = os_release['NAME'].replace(' GNU/Linux', '')
         os_version = os_release.get('VERSION_ID', '')
         os_desc = '{} {}'.format(os_name, os_version).strip()
+
+    else:
+        raise NotImplementedError(f"Only FreeBSD and Linux are currenctly supported, not '{sys.platform}'")
 
     return DISTROS[os_name](os_name, os_desc)
 
