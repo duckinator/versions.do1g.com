@@ -70,7 +70,7 @@ DISTROS = {
     'Debian': Debian,
     'Ubuntu': Debian,
     'Fedora Linux': Fedora,
-    'OpenSUSE Tumbleweed': OpenSUSE,
-    'OpenSUSE Leap': OpenSUSE,
+    'openSUSE Tumbleweed': OpenSUSE,
+    'openSUSE Leap': OpenSUSE,
     'FreeBSD': FreeBSD,
 }
