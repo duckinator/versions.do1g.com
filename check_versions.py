@@ -138,6 +138,7 @@ class OpenSUSE(Distro):
         if 'python3' in packages:
             wp_python3_xml = subprocess.check_output(["zypper", "--xmlout", "what-provides", "python3"])
             wp_python3 = ET.fromstring(wp_python3_xml).find('./search-result/solvable-list/solvable').attrib['name']
+            self.real_python3_package = wp_python3
             packages[packages.index('python3')] = wp_python3
         return 'zypper --xmlout info {}'.format(' '.join(packages))
 
@@ -146,7 +147,12 @@ class OpenSUSE(Distro):
         messages = root.findall("./message[@type='info']")
         messages = [msg.text for msg in messages]
         messages = list(filter(lambda msg: ':' in msg, messages))
-        return self.parse_chunks(messages)
+        info = self.parse_chunks(messages)
+
+        # Undo the `zypper what-provides` mess above.
+        info["python3"] = info.pop(self.real_python3_package)
+
+        return info
 
 
 class FreeBSD(Distro):
