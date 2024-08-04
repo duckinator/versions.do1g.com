@@ -53,7 +53,7 @@ def download_all(build_id):
     os_name_list = [
         'archlinux_and_manjaro',
         'fedora',
-        'opensuse',
+        #'opensuse',
         'debian_and_ubuntu',
         'freebsd',
     ]
