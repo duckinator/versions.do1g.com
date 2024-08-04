@@ -67,52 +67,41 @@ task:
     - debian_and_ubuntu
     - freebsd
 
-# Generate the site and publish it, for main branch.
-publish_task:
-  only_if: $BRANCH == 'main'
+render_task:
   depends_on:
     - site gen success
+  container:
+    image: python:3-slim
+  install_script:
+    - pip install lxml
+  script:
+    - python3 -m generate_site $CIRRUS_BUILD_ID
+    - stat _site/index.html
+    - tar -cf site.tar _site/
+  site_artifacts:
+    path: "site.tar"
+
+# Publish updates merged to the main branch
+publish_task:
+  skip: $BRANCH != 'main'
+  depends_on:
+    - render
   container:
     image: node:20-bookworm
   env:
-    NETLIFY_AUTH_TOKEN: ENCRYPTED[ec6da05d365917ed543e307555cbd9c618bbd41db7dee828daf7b01825adef48f547db89ead63b99418fe07a9d41b43a]
-    NETLIFY_SITE_ID: ENCRYPTED[a408add4551cd62fe8a5a912569fda66b5e991dd1097a8eaf0a6479179a07a6ec3e5d9e0c67d16f61c67a6721a728a91]
+    TOKEN:
+      ENCRYPTED[ec6da05d365917ed543e307555cbd9c618bbd41db7dee828daf7b01825adef48f547db89ead63b99418fe07a9d41b43a]
+    SITE_ID:
+      ENCRYPTED[a408add4551cd62fe8a5a912569fda66b5e991dd1097a8eaf0a6479179a07a6ec3e5d9e0c67d16f61c67a6721a728a91]
   install_script:
-    - apt-get -y update
-    - apt-get -y install python3 python3-lxml
     # https://github.com/netlify/cli/issues/1870
     - npm install --unsafe-perm=true -g netlify-cli
   script:
-    - python3 -m generate_site $CIRRUS_BUILD_ID
-    - stat _site/index.html
-    - netlify deploy --auth $NETLIFY_AUTH_TOKEN --site $NETLIFY_SITE_ID --dir=_site --prod
-
-# Generates the site but don't publish it, for non-main branches.
-fake_publish_task:
-  only_if: $BRANCH != 'main'
-  depends_on:
-    - site gen success
-  container:
-    image: node:20-bookworm
-  install_script:
-    - apt-get -y update
-    - apt-get -y install python3 python3-lxml
-    # https://github.com/netlify/cli/issues/1870
-    - npm install --unsafe-perm=true -g netlify-cli
-  script:
-    - python3 -m generate_site $CIRRUS_BUILD_ID
-    - stat _site/index.html
+    - wget "https://api.cirrus-ci.com/v1/artifact/build/${CIRRUS_BUILD_ID}/render/site/site.tar" -O - | tar -vx
+    - netlify deploy --auth $TOKEN --site $SITE_ID --dir=_site --prod
 
 task:
-  only_if: $BRANCH == 'main'
   name: CI success
   container: {image: busybox}
   depends_on:
-    - publish
-
-task:
-  only_if: $BRANCH != 'main'
-  name: CI success
-  container: {image: busybox}
-  depends_on:
-    - fake_publish
+    - publish  # marked as successful on skip
