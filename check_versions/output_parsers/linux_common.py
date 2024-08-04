@@ -68,7 +68,9 @@ def _parse_pacman(output):
     output = output.replace("\r", "").replace("\n                  ", ' ')
 
     # Remove ":: <...>" and "downloading <repo name>..." lines.
-    valid = lambda x: not x.startswith(":: ") and not x.startswith("downloading ")
+    def valid(x):
+        return not x.startswith(":: ") and not x.startswith("downloading ")
+
     output = "\n".join(filter(valid, output.split("\n")))
 
     return parse_common(output)
