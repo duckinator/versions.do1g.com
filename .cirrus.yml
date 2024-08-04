@@ -63,7 +63,7 @@ task:
     - lint
     - archlinux_and_manjaro
     - fedora
-    - opensuse
+    #- opensuse
     - debian_and_ubuntu
     - freebsd
 
