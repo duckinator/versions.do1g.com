@@ -1,7 +1,62 @@
+#!/usr/bin/env python3
+
+"""Checkthe available versions of various packages on the current system."""
+
+import json
+from pathlib import Path
+import shlex
 import subprocess
+import sys
 import xml.etree.ElementTree as ET
 
+PACKAGES = ['python3', 'ruby', 'clang', 'gcc']
+
+def main():
+    """Entrypoint for the script."""
+    packages = ['python3', 'ruby', 'clang', 'gcc']
+
+    discover().package_info(packages).save()
+
+def run(cmd):
+    """Print the command being run, runs it, and prints its output."""
+    print('$', cmd)
+    args = shlex.split(cmd)
+    output = subprocess.check_output(args).decode().strip()
+    print(output)
+    print()
+    return output
+
+
+class PackageInfo:
+    def __init__(self, os_name, os_desc, package_info):
+        self.name = os_name
+        self.description = os_desc
+        self.package_info = package_info
+
+    def as_dict(self):
+        return {
+            'name': self.name,
+            'description': self.description,
+            'results': self.package_info,
+        }
+
+    def save(self):
+        os_filename_id = self.description.lower().replace(' ', '_')
+        print()
+        Path('source').mkdir(exist_ok=True)
+        filename = 'source/{}.json'.format(os_filename_id)
+        print("Saving data to:", filename)
+        Path(filename).write_text(json.dumps(self.as_dict()))
+        print("File contents:")
+        print(Path(filename).read_text())
+        return filename
+
+
 class Distro:
+    def __init__(self, os_name, os_desc):
+        self.os_name = os_name
+        self.os_desc = os_desc
+
     def _normalize_version(self, version):
         if ':' in version:
             version = version.split(':')[1]
@@ -49,6 +104,11 @@ class Distro:
         output = output.replace("\r", "")
         chunks = output.strip().split("\n\n")
         return self.parse_chunks(chunks)
+
+    def package_info(self, packages):
+        output = run(self.info_command(packages))
+        return PackageInfo(self.os_name, self.os_desc, self.parse_info(output))
+
 
 class ArchLinux(Distro):
     def info_command(self, packages):
@@ -121,6 +181,7 @@ class FreeBSD(Distro):
 
         return info
 
+
 DISTROS = {
     'Arch Linux': ArchLinux,
     'Manjaro Linux': ArchLinux,
@@ -131,3 +192,24 @@ DISTROS = {
     'openSUSE Leap': OpenSUSE,
     'FreeBSD': FreeBSD,
 }
+
+
+def discover():
+    # Detect the operating system name/description.
+    if sys.platform.startswith('freebsd'):
+        os_name = 'FreeBSD'
+        os_desc = run('uname -sr')
+    else: # Assume everything else is Linux.
+        # Treat /etc/os-release as a key/value pair of strings,
+        # with optional quotes on the value side.
+        os_release = {k: v[1:-1] if v[0] == '"' else v for (k, v) in [line.split("=") for line in Path("/etc/os-release").read_text().splitlines() if not line.startswith("#")]}
+        os_name = os_release['NAME'].replace(' GNU/Linux', '')
+        os_version = os_release.get('VERSION_ID', '')
+        os_desc = '{} {}'.format(os_name, os_version).strip()
+
+    return DISTROS[os_name](os_name, os_desc)
+
+
+
+if __name__ == "__main__":
+    main()
