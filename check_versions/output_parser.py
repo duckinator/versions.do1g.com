@@ -1,12 +1,54 @@
 import subprocess
 import xml.etree.ElementTree as ET
 
-from .linux_common import common_parse_info, parse_chunks
-
 class Distro:
-    OUTPUT_FORMAT = 'common'
+    def _normalize_version(self, version):
+        if ':' in version:
+            version = version.split(':')[1]
+        if '-' in version:
+            version = version.split('-')[0]
+        if '+' in version:
+            version = version.split('+')[0]
+        if ',' in version:
+            version = version.split(',')[0]
+        return version
+
+    def parse_chunk(self, chunk):
+        lines = chunk.split("\n")
+
+        data = {}
+        for line in lines:
+            if ':' not in line:
+                continue
+            parts = line.split(':', 1)
+            name = parts[0].strip()
+            value = parts[1].strip()
+            data[name] = value
+
+        # pacman uses 'Package', apt/dnf/zypper use 'Name'
+        name = data.get('Package', data.get('Name'))
+
+        # DAMNIT ARCHLINUX.
+        if name == 'python':
+            name = 'python3'
+
+        version = self._normalize_version(data['Version'])
+
+        print("{:20} {}".format(name, version))
+
+        return (name, {
+            'version': version,
+            'via': None,
+            })
+
+    def parse_chunks(self, chunks):
+        parsed_chunks = [self.parse_chunk(chunk) for chunk in chunks]
+        return {name: data for (name, data) in parsed_chunks}
+
     def parse_info(self, output):
-        return common_parse_info(self.OUTPUT_FORMAT, output)
+        output = output.replace("\r", "")
+        chunks = output.strip().split("\n\n")
+        return self.parse_chunks(chunks)
 
 class ArchLinux(Distro):
     def info_command(self, packages):
@@ -27,6 +69,10 @@ class Fedora(Distro):
         packages = list(map(lambda x: x + '.x86_64', packages))
         return 'dnf info --color=false {}'.format(' '.join(packages))
 
+    def parse_info(self, output):
+        output = output.replace("\r", "").replace("\n             : ", ' ')
+        return super().parse_info(output)
+
 class OpenSUSE(Distro):
     def info_command(self, packages):
         if 'python3' in packages:
@@ -40,7 +86,7 @@ class OpenSUSE(Distro):
         messages = root.findall("./message[@type='info']")
         messages = [msg.text for msg in messages]
         messages = list(filter(lambda msg: ':' in msg, messages))
-        return parse_chunks(messages)
+        return self.parse_chunks(messages)
 
 
 class FreeBSD(Distro):
