@@ -15,7 +15,6 @@ class ArchLinux(Distro):
         return 'pacman -Syi --noprogressbar {}'.format(' '.join(packages_copy))
 
 class Debian(Distro):
-    OUTPUT_FORMAT = 'apt'
     def info_command(self, packages):
         return 'apt-cache show {}'.format(' '.join(packages))
 

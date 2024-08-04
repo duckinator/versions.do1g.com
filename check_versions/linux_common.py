@@ -49,13 +49,6 @@ def parse_common(output):
     return package_info
 
 
-# raw `apt show <packages>` output => {'pkg1': 'ver1', 'pkg2': 'ver2'}
-def _parse_apt(output):
-    # Remove \r, collapse line continuations.
-    output = output.replace("\r", "").replace("\n ", ' ')
-    return parse_common(output)
-
-
 # raw `dnf info <packages>` output => {'pkg1': 'ver1', 'pkg2': 'ver2'}
 def _parse_dnf(output):
     # Remove \r, collapse line continuations.
@@ -81,7 +74,6 @@ def _parse_zypper(output):
 def common_parse_info(pkgman, output):
     return {
         'common': parse_common,
-        'apt': _parse_apt,
         'dnf': _parse_dnf,
         'zypper': _parse_zypper,
     }[pkgman](output)
