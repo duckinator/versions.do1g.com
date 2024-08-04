@@ -35,17 +35,10 @@ check_versions_task:
   json_artifacts:
     path: "source/*.json"
 
-task:
-  name: site gen success
-  container:
-    image: busybox
+render_task:
   depends_on:
     - lint
     - check_versions
-
-render_task:
-  depends_on:
-    - site gen success
   container:
     image: python:3-slim
   install_script:
