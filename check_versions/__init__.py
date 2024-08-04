@@ -1,12 +1,12 @@
 """Check the available versions of various packages on the current system."""
 
-from importlib import import_module
 import json
 from pathlib import Path
 import shlex
 from subprocess import check_output
 import sys
 
+from . import output_parser
 
 def run(cmd):
     """Print the command being run, runs it, and prints its output."""
@@ -34,22 +34,16 @@ def main(_argv):
         os_version = os_release.get('VERSION_ID', '')
         os_desc = '{} {}'.format(os_name, os_version).strip()
 
-    os_id = os_name.lower().replace(' ', '_')
     os_filename_id = os_desc.lower().replace(' ', '_')
-    module_name = '.output_parsers.{}'.format(os_id)
 
-    # E.g.,
-    # - If os_name is 'openSUSE Leap', module is .check_versions.opensuse_leap.
-    # - If os_name is 'ArchLinux', module is .check_versions.archlinux.
-    # etc.
-    module = import_module(module_name, package='check_versions')
+    distro = output_parser.DISTROS[os_name]()
 
-    output = run(module.info_command(packages))
+    output = run(distro.info_command(packages))
     print()
     print('OS name: {}'.format(os_name))
     print('OS desc: {}'.format(os_desc))
     # print("Parsed output:")
-    parsed_output = module.parse_info(output)
+    parsed_output = distro.parse_info(output)
     data = {
         'name': os_name,
         'description': os_desc,
