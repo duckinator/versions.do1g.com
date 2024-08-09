@@ -34,10 +34,8 @@ def _get_html(url):
 
 def _normalize_version(version):
     # replace \xa0 (non-breaking space) with space.
-    version = version.replace("\xa0", " ")
-
-    # given "<name> <version>", return "<version>".
-    return version.split(' ')[1]
+    # then, given "<name> <version>", return "<version>".
+    return version.replace("\xa0", " ").split(' ')[1]
 
 
 def _normalize(versions):
@@ -71,23 +69,13 @@ def unknown(package, _version):
     return len(all()[package]) == 0
 
 
-def _loose_compare(v1, v2, fn):
+def loose_ge(v1, v2):
     v1_parts = len(v1.split('.'))
     v2_parts = len(v2.split('.'))
     parts_to_keep = min(v1_parts, v2_parts)
     v1 = '.'.join(v1.split('.')[:parts_to_keep])
     v2 = '.'.join(v2.split('.')[:parts_to_keep])
-    return fn(V(v1), V(v2))
-
-
-def loose_ge(v1, v2):
-    """TODO: Figure out wtf this does, again."""
-    return _loose_compare(v1, v2, lambda a, b: a >= b)
-
-
-def loose_gt(v1, v2):
-    """TODO: Figure out wtf this does, again."""
-    return _loose_compare(v1, v2, lambda a, b: a > b)
+    return V(v1) >= V(v2)
 
 
 def all():
