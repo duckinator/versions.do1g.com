@@ -24,15 +24,12 @@ def V(version):
     return parse_version(version)
 
 
-# We memoize _get() to avoid redundant network requests.
+# We memoize _get_html() to avoid redundant network requests.
 @memoize()
-def _get(url):
-    with urlopen(url) as f:
-        return f.read().decode()
-
-
 def _get_html(url):
-    return html.document_fromstring(_get(url))
+    with urlopen(url) as f:
+        result = f.read().decode()
+        return html.document_fromstring(result)
 
 
 def _normalize_version(version):
