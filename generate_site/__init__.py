@@ -54,20 +54,6 @@ def raw_data():
     return [json.loads(path.read_text()) for path in paths]
 
 
-def os_names():
-    """Return a list of all operating system names."""
-    return sorted([data['description'] for data in raw_data()], key=str.lower)
-
-
-def normalized_data():
-    """Return normalized versions of data from all .json files in _data/."""
-    raw = raw_data()
-    data = {}
-    for chunk in raw:
-        data[chunk['description']] = chunk
-    return data
-
-
 def maintenance_status(package, version):
     """Returns one of 'latest', 'outdated', 'unsupported', or 'unknown'.
     These are used as class names in the generated HTML."""
@@ -98,18 +84,20 @@ def maintenance_status_note(package, version):
 def build_table():
     """Generate a table of version information."""
     print("Building table...")
-    os_data = normalized_data()
+    os_names = sorted([data['description'] for data in raw_data()], key=str.lower)
+    os_data = {chunk['description']: description for chunk in raw_data()}
+
     table = [
         "<table>",
         '  <tr class="header">',
         '    <th>Package</th>',
-        *['    <th>{}</th>'.format(os_data[os]['description']) for os in os_names()],
+        *['    <th>{}</th>'.format(os_data[os]['description']) for os in os_names],
         '  </tr>',
     ]
     for package in supported_versions.package_names:
         table.append(f'  <tr id="pkg-{package}">')
         table.append(f'    <th class="left-header"><a href="#pkg-{package}">{package}</a></th>')
-        for os_name in os_names():
+        for os_name in os_names:
             print(f'  {os_name} / {package}')
             os_package_data = os_data[os_name]['results'][package]
             version = os_package_data['version']
