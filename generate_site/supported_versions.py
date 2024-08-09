@@ -7,7 +7,7 @@ from pkg_resources import parse_version as V
 
 
 urls = {
-    'clang': 'https://llvm.org',
+    'clang': 'https://releases.llvm.org/',
     'gcc': 'https://gcc.gnu.org/',
     'python3': 'https://devguide.python.org/versions/#supported-versions',
     'ruby': 'https://www.ruby-lang.org/en/downloads/branches/',
@@ -22,12 +22,6 @@ def _get_html(url):
     with urlopen(url) as f:
         result = f.read().decode()
         return html.document_fromstring(result)
-
-
-def _normalize(versions):
-    # replace \xa0 (non-breaking space) with space.
-    # then, given "<name> <version>", return "<version>".
-    return [version.replace("\xa0", " ").split(' ')[1] for version in versions]
 
 
 def is_latest(package, version):
@@ -78,18 +72,15 @@ def all():
 
 def clang():
     """Return supported versions of Clang."""
-    # If the exception in this function is raised, it probably means the link on https://llvm.org was changed.
-    # Start by: Going to https://llvm.org , scroll down to "Download now:", and investigating the URL for a specific LLVM version.
-    versions = _get_html(urls['clang']).xpath('//a[starts-with(@href, "https://releases.llvm.org/")]/b/text()')
-    if len(versions) == 0:
-        raise Exception("clang() returned an empty list. See comment in supported_versions.clang() for how to resolve.")
-    return _normalize(versions)
+    versions = _get_html(urls['clang']).xpath("/html/body/div[2]/div[8]/table/tbody/tr[3]/td[2]/text()")
+    assert len(versions) > 0, "no Clang versions found."
+    return versions
 
 
 def gcc():
     """Return supported versions of GCC."""
     versions = _get_html(urls['gcc']).xpath('//td/dl/dt/span[@class="version"]/a/text()')
-    return _normalize(versions)
+    return [version.splitwords()[1] for version in versions]
 
 
 def python3():
@@ -113,4 +104,4 @@ def python3():
 def ruby():
     """Return supported versions of Ruby."""
     versions = _get_html(urls['ruby']).xpath('//div[@id="content-wrapper"]/div/p[contains(text(), "maintenance")]/preceding-sibling::h3/text()')
-    return _normalize(versions)
+    return [version.splitwords()[1] for version in versions]
