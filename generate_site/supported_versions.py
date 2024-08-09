@@ -3,11 +3,11 @@
 from functools import lru_cache as memoize
 from urllib.request import urlopen
 from lxml import html
-from pkg_resources import parse_version
+from pkg_resources import parse_version as V
 
 
 urls = {
-    'clang': 'https://llvm.org',
+    'clang': 'https://releases.llvm.org',
     'gcc': 'https://gcc.gnu.org/',
     'python3': 'https://devguide.python.org/versions/#supported-versions',
     'ruby': 'https://www.ruby-lang.org/en/downloads/branches/',
@@ -17,34 +17,11 @@ urls = {
 package_names = urls.keys()
 
 
-def V(version):
-    """Parse +version+ and return a +packaging.versions.Version+."""
-    # Given e.g. "3.0~exp1", take "3.0".
-    version = version.split('~')[0]
-    return parse_version(version)
-
-
-# We memoize _get() to avoid redundant network requests.
 @memoize()
-def _get(url):
-    with urlopen(url) as f:
-        return f.read().decode()
-
-
 def _get_html(url):
-    return html.document_fromstring(_get(url))
-
-
-def _normalize_version(version):
-    # replace \xa0 (non-breaking space) with space.
-    version = version.replace("\xa0", " ")
-
-    # given "<name> <version>", return "<version>".
-    return version.split(' ')[1]
-
-
-def _normalize(versions):
-    return [_normalize_version(version) for version in versions]
+    with urlopen(url) as f:
+        result = f.read().decode()
+        return html.document_fromstring(result)
 
 
 def is_latest(package, version):
@@ -74,23 +51,13 @@ def unknown(package, _version):
     return len(all()[package]) == 0
 
 
-def _loose_compare(v1, v2, fn):
+def loose_ge(v1, v2):
     v1_parts = len(v1.split('.'))
     v2_parts = len(v2.split('.'))
     parts_to_keep = min(v1_parts, v2_parts)
     v1 = '.'.join(v1.split('.')[:parts_to_keep])
     v2 = '.'.join(v2.split('.')[:parts_to_keep])
-    return fn(V(v1), V(v2))
-
-
-def loose_ge(v1, v2):
-    """TODO: Figure out wtf this does, again."""
-    return _loose_compare(v1, v2, lambda a, b: a >= b)
-
-
-def loose_gt(v1, v2):
-    """TODO: Figure out wtf this does, again."""
-    return _loose_compare(v1, v2, lambda a, b: a > b)
+    return V(v1) >= V(v2)
 
 
 def all():
@@ -105,18 +72,15 @@ def all():
 
 def clang():
     """Return supported versions of Clang."""
-    # If the exception in this function is raised, it probably means the link on https://llvm.org was changed.
-    # Start by: Going to https://llvm.org , scroll down to "Download now:", and investigating the URL for a specific LLVM version.
-    versions = _get_html(urls['clang']).xpath('//a[starts-with(@href, "https://releases.llvm.org/")]/b/text()')
-    if len(versions) == 0:
-        raise Exception("clang() returned an empty list. See comment in supported_versions.clang() for how to resolve.")
-    return _normalize(versions)
+    versions = _get_html(urls['clang']).xpath("/html/body/div[2]/div[8]/table/tbody/tr[3]/td[2]/text()")
+    assert len(versions) > 0, "no Clang versions found."
+    return versions
 
 
 def gcc():
     """Return supported versions of GCC."""
     versions = _get_html(urls['gcc']).xpath('//td/dl/dt/span[@class="version"]/a/text()')
-    return _normalize(versions)
+    return [version.splitwords()[1] for version in versions]
 
 
 def python3():
@@ -140,4 +104,4 @@ def python3():
 def ruby():
     """Return supported versions of Ruby."""
     versions = _get_html(urls['ruby']).xpath('//div[@id="content-wrapper"]/div/p[contains(text(), "maintenance")]/preceding-sibling::h3/text()')
-    return _normalize(versions)
+    return [version.splitwords()[1] for version in versions]

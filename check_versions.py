@@ -66,6 +66,8 @@ class Distro:
             version = version.split('+')[0]
         if ',' in version:
             version = version.split(',')[0]
+        if '~' in version:
+            version = version.split('~')[0]
         return version
 
     def parse_chunk(self, chunk):
