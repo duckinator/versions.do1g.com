@@ -24,7 +24,6 @@ def V(version):
     return parse_version(version)
 
 
-# We memoize _get_html() to avoid redundant network requests.
 @memoize()
 def _get_html(url):
     with urlopen(url) as f:
@@ -32,14 +31,10 @@ def _get_html(url):
         return html.document_fromstring(result)
 
 
-def _normalize_version(version):
+def _normalize(versions):
     # replace \xa0 (non-breaking space) with space.
     # then, given "<name> <version>", return "<version>".
-    return version.replace("\xa0", " ").split(' ')[1]
-
-
-def _normalize(versions):
-    return [_normalize_version(version) for version in versions]
+    return [version.replace("\xa0", " ").split(' ')[1] for version in versions]
 
 
 def is_latest(package, version):
