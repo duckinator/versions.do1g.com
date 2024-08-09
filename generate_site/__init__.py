@@ -85,7 +85,7 @@ def build_table():
     """Generate a table of version information."""
     print("Building table...")
     os_names = sorted([data['description'] for data in raw_data()], key=str.lower)
-    os_data = {chunk['description']: description for chunk in raw_data()}
+    os_data = {chunk['description']: chunk for chunk in raw_data()}
 
     table = [
         "<table>",
