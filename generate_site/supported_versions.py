@@ -7,7 +7,7 @@ from pkg_resources import parse_version as V
 
 
 urls = {
-    'clang': 'https://releases.llvm.org/',
+    'clang': 'https://releases.llvm.org',
     'gcc': 'https://gcc.gnu.org/',
     'python3': 'https://devguide.python.org/versions/#supported-versions',
     'ruby': 'https://www.ruby-lang.org/en/downloads/branches/',
