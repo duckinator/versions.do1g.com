@@ -24,12 +24,6 @@ def _get_html(url):
         return html.document_fromstring(result)
 
 
-def _normalize(versions):
-    # replace \xa0 (non-breaking space) with space.
-    # then, given "<name> <version>", return "<version>".
-    return [version.replace("\xa0", " ").split(' ')[1] for version in versions]
-
-
 def is_latest(package, version):
     """Determine if +version+ is the latest version of +package+.
 
@@ -78,39 +72,21 @@ def all():
 
 def clang():
     """Return supported versions of Clang."""
-    # If the exception in this function is raised, it probably means the link on https://llvm.org was changed.
-    # Start by: Going to https://llvm.org , scroll down to "Download now:", and investigating the URL for a specific LLVM version.
     versions = _get_html(urls['clang']).xpath('//a[starts-with(@href, "https://releases.llvm.org/")]/b/text()')
-    if len(versions) == 0:
-        raise Exception("clang() returned an empty list. See comment in supported_versions.clang() for how to resolve.")
-    return _normalize(versions)
+    assert len(versions) > 0, "no Clang versions found."
+    return versions
 
 
 def gcc():
     """Return supported versions of GCC."""
-    versions = _get_html(urls['gcc']).xpath('//td/dl/dt/span[@class="version"]/a/text()')
-    return _normalize(versions)
+    return [version.split()[1] for version in _get_html(urls['gcc']).xpath('//td/dl/dt/span[@class="version"]/a/text()')]
 
 
 def python3():
     """Return supported versions of Python3."""
-    rows = _get_html(urls['python3']).xpath('//*[@id="supported-versions"]//table[1]//tr[td]')
-    versions = []
-
-    for row in rows:
-        cols = row.xpath('.//td')
-        if not cols:  # No <td> elements in this row -- probably the header.
-            continue
-        text = cols[0].text_content()
-
-        # If the branch is "main", don't track it.
-        if text == 'main':
-            continue
-        versions.append(text)
-    return versions
+    return _get_html(urls['python3']).xpath('//*[@id="supported-versions"]//table//tr/td[1]/p[not(contains(text(), "main")]/text()')
 
 
 def ruby():
     """Return supported versions of Ruby."""
-    versions = _get_html(urls['ruby']).xpath('//div[@id="content-wrapper"]/div/p[contains(text(), "maintenance")]/preceding-sibling::h3/text()')
-    return _normalize(versions)
+    return [version.split()[1] for version in _get_html(urls['ruby']).xpath('//div[@id="content-wrapper"]/div/p[contains(text(), "maintenance")]/preceding-sibling::h3/text()')]
