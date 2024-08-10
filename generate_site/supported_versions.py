@@ -17,6 +17,17 @@ urls = {
 package_names = urls.keys()
 
 
+def nonemptylist(l: list) -> list:
+    assert isinstance(l, list)
+    if not l:
+        raise ValueError("Empty list")
+    return l
+
+
+def secondwords(l: list) -> list:
+    return [x.split()[1] for x in l]
+
+
 @memoize()
 def _get_html(url):
     with urlopen(url) as f:
@@ -72,21 +83,19 @@ def all():
 
 def clang():
     """Return supported versions of Clang."""
-    versions = _get_html(urls['clang']).xpath('//a[starts-with(@href, "https://releases.llvm.org/")]/b/text()')
-    assert len(versions) > 0, "no Clang versions found."
-    return versions
+    return nonemptylist(secondwords(_get_html(urls['clang']).xpath('//a[starts-with(@href, "https://releases.llvm.org/")]/b/text()')))
 
 
 def gcc():
     """Return supported versions of GCC."""
-    return [version.split()[1] for version in _get_html(urls['gcc']).xpath('//td/dl/dt/span[@class="version"]/a/text()')]
+    return nonemptylist(secondwords(_get_html(urls['gcc']).xpath('//span[@class="version"]/a/text()')))
 
 
 def python3():
     """Return supported versions of Python3."""
-    return _get_html(urls['python3']).xpath('//*[@id="supported-versions"]//table//tr/td[1]/p[not(contains(text(), "main")]/text()')
+    return nonemptylist(_get_html(urls['python3']).xpath('//*[@id="supported-versions"]//table//tr/td[1]/p[not(contains(text(), "main"))]/text()'))
 
 
 def ruby():
     """Return supported versions of Ruby."""
-    return [version.split()[1] for version in _get_html(urls['ruby']).xpath('//div[@id="content-wrapper"]/div/p[contains(text(), "maintenance")]/preceding-sibling::h3/text()')]
+    return nonemptylist(secondwords(_get_html(urls['ruby']).xpath('//div[@id="content-wrapper"]/div/p[contains(text(), "maintenance")]/preceding-sibling::h3/text()')))
