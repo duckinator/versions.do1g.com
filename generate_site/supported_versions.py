@@ -17,15 +17,15 @@ urls = {
 package_names = urls.keys()
 
 
-def nonemptylist(l: list) -> list:
+def nonemptylist(lst: list) -> list:
     assert isinstance(l, list)
-    if not l:
+    if not lst:
         raise ValueError("Empty list")
-    return l
+    return lst
 
 
-def secondwords(l: list) -> list:
-    return [x.split()[1] for x in l]
+def secondwords(lst: list) -> list:
+    return [x.split()[1] for x in lst]
 
 
 @memoize()
