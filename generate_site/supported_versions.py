@@ -18,7 +18,7 @@ package_names = urls.keys()
 
 
 def nonemptylist(lst: list) -> list:
-    assert isinstance(l, list)
+    assert isinstance(lst, list)
     if not lst:
         raise ValueError("Empty list")
     return lst
