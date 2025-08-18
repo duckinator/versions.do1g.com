@@ -3,7 +3,7 @@
 from functools import lru_cache as memoize
 from urllib.request import urlopen
 from lxml import html
-from pkg_resources import parse_version as V
+from packaging.version import parse as V
 
 
 urls = {
