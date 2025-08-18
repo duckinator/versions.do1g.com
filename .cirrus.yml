@@ -10,6 +10,7 @@ check_versions_task:
   matrix:
     - freebsd_instance: {image_family: freebsd-14-2}
     - container: {image: fedora:latest}
+      install_script: dnf install -y python3
     - container:
         matrix:
           - image: archlinux:latest
