@@ -8,7 +8,7 @@ lint_task:
 
 check_versions_task:
   matrix:
-    - freebsd_instance: {image_family: freebsd-14-0}
+    - freebsd_instance: {image_family: freebsd-14-2}
     - container: {image: fedora:latest}
     - container:
         matrix:
