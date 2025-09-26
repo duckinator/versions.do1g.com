@@ -1,7 +1,7 @@
 """Fetches lists of supported versions for various software."""
 
 from functools import lru_cache as memoize
-from urllib.request import urlopen
+from urllib.request import urlopen, Request
 from lxml import html
 from packaging.version import parse as V
 
@@ -16,6 +16,7 @@ urls = {
 
 package_names = urls.keys()
 
+HEADERS = {"User-Agent": "Mozilla/Please-stop-blocking-urllib Python-urllib/3"}
 
 def nonemptylist(lst: list) -> list:
     assert isinstance(lst, list)
@@ -30,7 +31,7 @@ def secondwords(lst: list) -> list:
 
 @memoize()
 def _get_html(url):
-    with urlopen(url) as f:
+    with urlopen(Request(url, headers=HEADERS)) as f:
         result = f.read().decode()
         return html.document_fromstring(result)
 
