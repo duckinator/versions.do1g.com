@@ -74,7 +74,7 @@ tr:nth-child(even) .latest { background-color: #33a082; }
       <h1>Operating System Package Versions</h1>
 
       <p>This page provides the versions of packages that are available across different operating systems.</p>
-      <p>Maintained by <a href="https://smallest.dog">@duckinator</a>. Source is <a href="https://github.com/duckinator/versions.do1g.com">available on GitHub</a>.</p>
+      <p>Maintained by <a href="https://pup-e.com">@duckinator</a>. Source is <a href="https://github.com/duckinator/versions.do1g.com">available on GitHub</a>.</p>
       <p>You can also download the <a href="/data">raw data</a>.</p>
       <p></p>
       <p>Last updated: {{ date }}</p>
@@ -91,7 +91,7 @@ tr:nth-child(even) .latest { background-color: #33a082; }
 
       Details on what versions are supported can be found on these pages:
       <ul>
-        <li><a href="{{ clang }}">Clang version information (they don't explicitly state what's supported, so I assume "latest major version only")</a></li>
+        <li><a href="{{ clang }}">Clang version information</a> (they don't explicitly state what's supported, so I assume "latest major version only")</li>
         <li><a href="{{ gcc }}">GCC version information</a></li>
         <li><a href="{{ python3 }}">Python version information</a></li>
         <li><a href="{{ ruby }}">Ruby version information</a></li>
