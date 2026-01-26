@@ -99,4 +99,4 @@ def python3():
 
 def ruby():
     """Return supported versions of Ruby."""
-    return nonemptylist(secondwords(_get_html(urls['ruby']).xpath('//div[@id="content-wrapper"]/div/p[contains(text(), "maintenance")]/preceding-sibling::h3/text()')))
+    return nonemptylist(secondwords(_get_html(urls['ruby']).xpath('//*[@id="content-wrapper"]/div/p[contains(text(), "maintenance")]/preceding-sibling::h3/text()')))
